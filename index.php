@@ -516,7 +516,7 @@ function dignity_blogs_editor()
 {
  
 	// подключаем js от редактора markitup
-	echo '<script src="'. getinfo('plugins_url') . 'editor_markitup/jquery.markitup.js"></script>';
+	echo '<script src="'. getinfo('plugins_url') . 'dignity_blogs/js/jquery.markitup.js"></script>';
 
 	// подключаем стили
 	echo '<link rel="stylesheet" href="'. getinfo('plugins_url') . 'dignity_blogs/style.css">';

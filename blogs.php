@@ -139,6 +139,8 @@ else
 	echo t('Нет записей. Ваша будет первой!', __FILE__);
 }
 
+echo '<p style="font-size:10px; color:#555555; text-align:right;">Dignity Blogs by <a href="http://alexanderschilling.net">Alexander Schilling</a> | Source on <a href="https://github.com/dignityinside/dignity-blogs">github</a></p>';
+
 // конец шаблона
 require(getinfo('template_dir') . 'main-end.php');
 
