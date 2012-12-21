@@ -6,7 +6,7 @@
  */
 
 // начало шаблона
-require(getinfo('template_dir') . 'main-start.php');
+if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 
 // загружаем опции
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
@@ -328,6 +328,6 @@ else
 }
 
 // конец шаблона
-require(getinfo('template_dir') . 'main-end.php');
+if ($fn = mso_find_ts_file('main/main-end.php')) require($fn);
 
 #end of file

@@ -477,14 +477,14 @@ function blogs_cleantext(&$content)
                 // youtube
                 '~\[youtube\](.*?)\[\/youtube\]~si' => '<iframe width="640" height="360" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>',
                 
-		// вконтакте
+				// вконтакте
                 '~\[vk\](.*?)\[\/vk\]~si' => '<iframe src="$1" width="640" height="360" frameborder="0"></iframe>',
 				
-		// vimeo
-		'~\[vimeo\](.*?)\[\/vimeo\]~si' => '<iframe src="http://player.vimeo.com/video/$1" width="640" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
+				// vimeo
+				'~\[vimeo\](.*?)\[\/vimeo\]~si' => '<iframe src="http://player.vimeo.com/video/$1" width="640" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
 
-		// yandex-video
-		'~\[yavideo\](.*?)\[\/yavideo\]~si' => '<iframe width="640" height="360" frameborder="0" src="$1"></iframe>',
+				// yandex-video
+				'~\[yavideo\](.*?)\[\/yavideo\]~si' => '<iframe width="640" height="360" frameborder="0" src="$1"></iframe>',
 				
                 // горизонтальная линия
                 '~\[hr\]~si' => '<hr>',
@@ -492,16 +492,16 @@ function blogs_cleantext(&$content)
                 // переносы                                        
                 '~\n~' => '<br/>',
 		
-		# div
-		'~\[left\](.*?)\[\/left\]~si' => '<div style="text-align: left;">$1</div>',
+				# div
+				'~\[left\](.*?)\[\/left\]~si' => '<div style="text-align: left;">$1</div>',
 
-		'~\[right\](.*?)\[\/right\]~si' => '<div style="text-align: right;">$1</div>',
+				'~\[right\](.*?)\[\/right\]~si' => '<div style="text-align: right;">$1</div>',
 
-		'~\[center\](.*?)\[\/center\]~si' => '<div style="text-align: center;">$1</div>',
+				'~\[center\](.*?)\[\/center\]~si' => '<div style="text-align: center;">$1</div>',
 
-		'~\[justify\](.*?)\[\/justify\]~si' => '<div style="text-align: justify;">$1</div>',
-		
-		'~\[size=(.*?)\](.*?)\[\/size\]~si'		=> '<span style="font-size:$1">$2</span>',
+				'~\[justify\](.*?)\[\/justify\]~si' => '<div style="text-align: justify;">$1</div>',
+				
+				'~\[size=(.*?)\](.*?)\[\/size\]~si'		=> '<span style="font-size:$1">$2</span>',
                 
             );
             

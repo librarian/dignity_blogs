@@ -6,7 +6,7 @@
  */
 
 // начало шаблона
-require(getinfo('template_dir') . 'main-start.php');
+if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 
 // доступ к CI
 $CI = & get_instance();
@@ -140,6 +140,6 @@ else
     echo t('Блог не найден.', __FILE__);
 }
 
-require(getinfo('template_dir') . 'main-end.php');
+if ($fn = mso_find_ts_file('main/main-end.php')) require($fn);
 
 // конец файла

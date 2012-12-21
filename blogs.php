@@ -6,7 +6,7 @@
  */
 
 // начало шаблона
-require(getinfo('template_dir') . 'main-start.php');
+if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 
 // доступ к CI
 $CI = & get_instance();
@@ -68,7 +68,7 @@ if ($query->num_rows() > 0)
 	
 	$out = '';
     
-    $out = '<h1>' . $options['title'] . '</h1>';
+    $out .= '<h1>' . $options['title'] . '</h1>';
     $out .= '<p style="border:solid 1px #DBE0E4; padding:10px; background:#FFFFE1;">' . $options['textdo'] . '</p>';
 	
 	foreach ($allpages as $onepage) 
@@ -77,10 +77,12 @@ if ($query->num_rows() > 0)
 		$out .= '<div class="page_only">';
 		
 		$out .= '<div class="info info-top">';
-		$out .= '<h1><a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' . $onepage['dignity_blogs_title'] . '</a></h1>';
+		$out .= '<h1>';
+		$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' . $onepage['dignity_blogs_title'] . '</a>';
+		$out .= '</h1>';
 		$out .= '</div>';
 		
-		// если вошел автор
+		// если вошел автор записи
        if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
        {
             // выводим ссылку «редактировать»
@@ -139,9 +141,10 @@ else
 	echo t('Нет записей. Ваша будет первой!', __FILE__);
 }
 
+// просьба не удалять эту строчку!
 echo '<p style="font-size:10px; color:#555555; text-align:right;">Dignity Blogs by <a href="http://alexanderschilling.net">Alexander Schilling</a> | Source on <a href="https://github.com/dignityinside/dignity-blogs">github</a></p>';
 
 // конец шаблона
-require(getinfo('template_dir') . 'main-end.php');
+if ($fn = mso_find_ts_file('main/main-end.php')) require($fn);
 
 #end of file
