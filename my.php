@@ -26,10 +26,36 @@ else $id = (int) $id;
 
 if ($id)
 {
+	// готовим пагинацию
+	$pag = array();
+	$pag['limit'] = $options['limit'];
+	$CI->db->from('dignity_blogs');
+	$CI->db->select('dignity_blogs_id');
+	$CI->db->where('dignity_blogs_comuser_id', $id);
+	$CI->db->where('dignity_blogs_approved', true);
+	$query = $CI->db->get();
+	$pag_row = $query->num_rows();
+
+	if ($pag_row > 0)
+	{
+		$pag['maxcount'] = ceil($pag_row / $pag['limit']);
+
+		$current_paged = mso_current_paged();
+		if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
+
+		$offset = $current_paged * $pag['limit'] - $pag['limit'];
+	}
+	else
+	{
+		$pag = false;
+	}
+
 	// загружаем данные из базы
 	$CI->db->from('dignity_blogs');
 	$CI->db->where('dignity_blogs_comuser_id', $id);
 	$CI->db->order_by('dignity_blogs_datecreate', 'desc');
+	if ($pag and $offset) $CI->db->limit($pag['limit'], $offset);
+	else $CI->db->limit($pag['limit']);
 	$query = $CI->db->get();
 
 	// если есть что выводить
@@ -93,6 +119,9 @@ if ($id)
                 }
 		
 		echo $out;
+
+		mso_hook('pagination', $pag);
+
 	}
 	else
 	{
