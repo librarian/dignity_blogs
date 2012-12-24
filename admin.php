@@ -31,8 +31,9 @@ if ( $post = mso_check_post(array('f_session_id', 'f_submit')) )
 	$options['title'] = $post['f_title'];
 	$options['description'] = $post['f_description'];
 	$options['keywords'] = $post['f_keywords'];
-    	$options['textdo'] = $post['f_textdo'];
+    $options['textdo'] = $post['f_textdo'];
 	$options['cackle_code'] = $post['f_cackle_code'];
+	$options['no_pagination'] = isset($post['f_no_pagination']) ? 1 : 0;
 	
 	mso_add_option($options_key, $options, 'plugins');
 	echo '<div class="update">' . t('Обновлено!', 'plugins') . '</div>';
@@ -62,6 +63,16 @@ $form .= '<p>' . t('Текст до:', __FILE__) . '<br>'
     . '<textarea name="f_textdo" cols="90" rows="5">' . $options['textdo'] . '</textarea></p>';
 $form .= '<p>' . t('Cackle код:', __FILE__) . '<br>'
     . '<textarea name="f_cackle_code" cols="90" rows="5">' . $options['cackle_code'] . '</textarea></p>';
+
+// отключить пагинацию комментарий
+$chckout = ''; 
+if (!isset($options['no_pagination']))  $options['no_pagination'] = true;
+if ( (bool)$options['no_pagination'] )
+{
+	$chckout = 'checked="true"';
+} 
+$form .= '<p>' . t('Отключить пагинацию комментарий?', __FILE__)
+	. ' <input name="f_no_pagination" type="checkbox" ' . $chckout . '></p>';
 
 // сразу на главную?
 $chckout = ''; 

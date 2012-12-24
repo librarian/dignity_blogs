@@ -73,57 +73,67 @@ if ($id)
                         $out .= '<div class="page_only">';
 			
                         $out .= '<div class="info info-top">';
-			$out .= '<h1><a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' . $onepage['dignity_blogs_title'] . '</a></h1>';
-			$out .= '</div>';
+						
+						$out .= '<h1>';
+						$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' . $onepage['dignity_blogs_title'] . '</a>';
+
+						$out .= '</h1>';
+						
+						$out .= '</div>';
 			
-			// если вошел автор
-			if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
-			{
-				// выводим ссылку «редактировать»
-				$out .= '<p><span style="padding-right:10px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '">' . t('Редактировать', __FILE__) . '</a></p>';
-			}
-		
-                        $out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
-		
-                        // если нет текста, скрываем ссылку «подробнее»
-                        if (!$onepage['dignity_blogs_text'])
-                        {
-                                $out .= '';
-                        }
-                        else
-                        {
-                                $out .= '<p style="padding-bottom:10px;">';
-				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' .
-                                	t('Подробнее →', __FILE__) . '</a>';
-				$out .= '</p>';
-                        }
-		
-			$out .= '<div class="info info-bottom">'
-			. '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/public.png' . '"></span>' . mso_date_convert($format = 'd.m.Y → H:i', $onepage['dignity_blogs_datecreate']);
-		
-			if ($onepage['dignity_blogs_category_id'])
-			{
-				$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '/category/' . $onepage['dignity_blogs_category_id'] . '">' . $onepage['dignity_blogs_category_name'] . '</a>';
-			}
-			else
-			{
-				$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Все записи', __FILE__) . '</a>';
-			}
-		
-			$CI->db->from('dignity_blogs_comments');
-			$CI->db->where('dignity_blogs_comments_approved', true);
-			$CI->db->where('dignity_blogs_comments_thema_id', $onepage['dignity_blogs_id']);
-			$out .= ' | ' . '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span>' . $CI->db->count_all_results();
-		
-				
-			$out .= '</div>';
-			$out .= '<div class="break"></div>';
-			$out .= '</div><!--div class="page_only"-->';
+						// если вошел автор
+						if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
+						{
+							// выводим ссылку «редактировать»
+							$out .= '<p><span style="padding-right:10px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '">' . t('Редактировать', __FILE__) . '</a></p>';
+						}
+					
+			                        $out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
+					
+			                        // если нет текста, скрываем ссылку «подробнее»
+			                        if (!$onepage['dignity_blogs_text'])
+			                        {
+			                                $out .= '';
+			                        }
+			                        else
+			                        {
+			                                $out .= '<p style="padding-bottom:10px;">';
+							$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' .
+			                                	t('Подробнее →', __FILE__) . '</a>';
+							$out .= '</p>';
+			                        }
+					
+						$out .= '<div class="info info-bottom">'
+						. '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/public.png' . '"></span>' . mso_date_convert($format = 'd.m.Y → H:i', $onepage['dignity_blogs_datecreate']);
+					
+						if ($onepage['dignity_blogs_category_id'])
+						{
+							$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '/category/' . $onepage['dignity_blogs_category_id'] . '">' . $onepage['dignity_blogs_category_name'] . '</a>';
+						}
+						else
+						{
+							$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Все записи', __FILE__) . '</a>';
+						}
+					
+						$CI->db->from('dignity_blogs_comments');
+						$CI->db->where('dignity_blogs_comments_approved', true);
+						$CI->db->where('dignity_blogs_comments_thema_id', $onepage['dignity_blogs_id']);
+						$out .= ' | ' . '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span>' . $CI->db->count_all_results();
+					
+							
+						$out .= '</div>';
+						$out .= '<div class="break"></div>';
+						$out .= '</div><!--div class="page_only"-->';
 		
                 }
 
-		$url = (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-		echo '<h2><span style="padding-right:10px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><a href="' . $url . '">' . t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a></h2>';
+        // путь к картинкам
+		$path = getinfo('plugins_url') . 'dignity_blogs/img/';
+
+		echo '<h2>';
+		echo t('Блог им. ', __FILE__) . $onepage['comusers_nik'];
+		echo ' ' . '<span style="float:right;"><a href="' . getinfo('site_url') . $options['slug'] . '/feed/' . $onepage['dignity_blogs_comuser_id'] . '"><img src="' . $path . 'feed.png' . '" alt="" title="RSS лента"></a></span>';
+		echo '</h2>';
 		
 		echo $out;
 		
@@ -132,7 +142,7 @@ if ($id)
 	}
 	else
 	{
-		echo '<p>' . t('Запись не найдена.', __FILE__) . '</p>';	
+		echo '<p>' . t('Блог не найден.', __FILE__) . '</p>';	
 	}
 }
 else

@@ -389,6 +389,11 @@ function dignity_blogs_custom_page_404($args = false)
 			// открываем view
 			require( getinfo('plugins_dir') . 'dignity_blogs/new.php' );
 		}
+		elseif(mso_segment(2) == 'feed')
+		{
+			// открываем view
+			require( getinfo('plugins_dir') . 'dignity_blogs/feed.php' );
+		}
 		else
 		{
 			// открываем

@@ -13,6 +13,7 @@ $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if (!isset($options['noapproved']))  $options['noapproved'] = true;
 if (!isset($options['slug']))  $options['slug'] = 'blogs';
 if ( !isset($options['cackle_code']) ) $options['cackle_code'] = '';
+if (!isset($options['no_pagination']))  $options['no_pagination'] = true;
 
 // получаем доступ к CI
 $CI = & get_instance();
@@ -132,27 +133,35 @@ if ($id)
 
 		//<- выводим комментарии
 		
-		$pag = array();
-		$pag['limit'] = 10;
+		if ($options['no_pagination'])
+		{
+			$pag = array();
+			$pag['limit'] = 10;
+		}
 		$CI->db->select('dignity_blogs_comments_id');
 		$CI->db->from('dignity_blogs_comments');
 		$CI->db->where('dignity_blogs_comments_approved', true);
 		$CI->db->where('dignity_blogs_comments_thema_id', $id);
 		$query = $CI->db->get();
-		$pag_row = $query->num_rows();
-
-		if ($pag_row > 0)
+		if ($options['no_pagination'])
 		{
-			$pag['maxcount'] = ceil($pag_row / $pag['limit']);
+			$pag_row = $query->num_rows();
 
-			$current_paged = mso_current_paged();
-			if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
 
-			$offset = $current_paged * $pag['limit'] - $pag['limit'];
-		}
-		else
-		{
-			$pag = false;
+			if ($pag_row > 0)
+			{
+				$pag['maxcount'] = ceil($pag_row / $pag['limit']);
+
+				$current_paged = mso_current_paged();
+				if ($current_paged > $pag['maxcount']) $current_paged = $pag['maxcount'];
+
+				$offset = $current_paged * $pag['limit'] - $pag['limit'];
+			}
+			else
+			{
+				$pag = false;
+			}
+
 		}
 
 		$CI->db->from('dignity_blogs_comments');
@@ -160,8 +169,11 @@ if ($id)
 		$CI->db->where('dignity_blogs_comments_thema_id', $id);
 		$CI->db->order_by('dignity_blogs_comments_datecreate', 'asc');
 		$CI->db->join('comusers', 'comusers.comusers_id = dignity_blogs_comments.dignity_blogs_comments_comuser_id', 'left');
-		if ($pag and $offset) $CI->db->limit($pag['limit'], $offset);
-		else $CI->db->limit($pag['limit']);
+		if ($options['no_pagination'])
+		{
+			if ($pag and $offset) $CI->db->limit($pag['limit'], $offset);
+			else $CI->db->limit($pag['limit']);
+		}
 		$query = $CI->db->get();
 
 		// если есть что выводить...
@@ -203,9 +215,14 @@ if ($id)
 			
 			// выводим комментарии
 			echo $comments_out;
+
+			if ($options['no_pagination'])
+			{
 	
-			// добавляем пагинацию
-			mso_hook('pagination', $pag);
+				// добавляем пагинацию
+				mso_hook('pagination', $pag);
+
+			}
 		}
 		else
 		{
@@ -274,21 +291,21 @@ if ($id)
 			else
 			{
 			        $form = '';     
-				$form .= '<h2>' . t('Оставьте комментарий!', __FILE__) . '</h2>';     
-				$form .= '<form action="" method="post">' . mso_form_session('f_session_id');
-				$form .= '<p><strong>' . t('Текст (можно использовать bb-code):', __FILE__) . '<span style="color:red;">*</span></strong><br><textarea name="f_dignity_blogs_comments_text" class="markItUp"
-					cols="80" rows="10" value="" required="required" style="margin-top: 2px; margin-bottom: 2px; "></textarea>';
-				$form .= '<p><input type="submit" class="submit" name="f_submit_dignity_blogs_comments_add" value="' . t('Отправить', __FILE__) . '"></p>';
-				$form .= '</form>';
+					$form .= '<h2>' . t('Оставьте комментарий!', __FILE__) . '</h2>';     
+					$form .= '<form action="" method="post">' . mso_form_session('f_session_id');
+					$form .= '<p><strong>' . t('Текст (можно использовать bb-code):', __FILE__) . '<span style="color:red;">*</span></strong><br><textarea name="f_dignity_blogs_comments_text" class="markItUp"
+						cols="80" rows="10" value="" required="required" style="margin-top: 2px; margin-bottom: 2px; "></textarea>';
+					$form .= '<p><input type="submit" class="submit" name="f_submit_dignity_blogs_comments_add" value="' . t('Отправить', __FILE__) . '"></p>';
+					$form .= '</form>';
                         
-				// выводим форму
-				echo $form;
+					// выводим форму
+					echo $form;
 			}
 
 			if ($options['cackle_code'])
 			{
-				echo '<div class="leave_a_comment">Комментарии через социальные сети:</div>';
-				echo $options['cackle_code'];
+					echo '<div class="leave_a_comment">Комментарии через социальные сети:</div>';
+					echo $options['cackle_code'];
 			}
 		}
 		else
@@ -296,13 +313,13 @@ if ($id)
 			// если не комюзер
 			if (!is_login_comuser())
 			{
-			     echo '<p style="border:solid 1px #DBE0E4; padding:10px; background:#FFFFE1;">' . t('Чтобы оставить свой комментарий, вам нужно', __FILE__) . ' <a href="' . getinfo('siteurl') . 'registration">' . t('зарегистироваться', __FILE__) . '</a> ' . t('или',__FILE__) . ' <a href="' . getinfo('siteurl') . 'login">' . t('войти на сайт', __FILE__) . '.</a></p>';	
+			    	echo '<p style="border:solid 1px #DBE0E4; padding:10px; background:#FFFFE1;">' . t('Чтобы оставить свой комментарий, вам нужно', __FILE__) . ' <a href="' . getinfo('siteurl') . 'registration">' . t('зарегистироваться', __FILE__) . '</a> ' . t('или',__FILE__) . ' <a href="' . getinfo('siteurl') . 'login">' . t('войти на сайт', __FILE__) . '.</a></p>';	
 
-				if ($options['cackle_code'])
-				{
-					echo '<div class="leave_a_comment">Комментарии через социальные сети:</div>';
-					echo $options['cackle_code'];
-				}
+					if ($options['cackle_code'])
+					{
+						echo '<div class="leave_a_comment">Комментарии через социальные сети:</div>';
+						echo $options['cackle_code'];
+					}
 
 			}
 			else

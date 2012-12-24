@@ -60,10 +60,10 @@ if ($query->num_rows() > 0)
 	
 	$out = '';
 	
-	$out .= '<span style="width: 60%; float:left; font-weight:bold;">' . t('Блог', __FILE__) . '</span>';
+	$out .= '<span style="width: 50%; float:left; font-weight:bold;">' . t('Блог', __FILE__) . '</span>';
     $out .= '<span style="width: 20%; float:left; font-weight:bold;">' . t('Тем', __FILE__) . '</span>';
     $out .= '<span style="width: 20%; float:left; font-weight:bold;">' . t('Комментарий', __FILE__) . '</span>';
-    #$out .= '<span style="width: 20%; float:left; font-weight:bold;">' . t('Просмотров', __FILE__) . '</span>';
+    $out .= '<span style="width: 10%; float:left; font-weight:bold;">' . t('RSS', __FILE__) . '</span>';
 
 	foreach ($allpages as $onepage) 
 	{
@@ -88,11 +88,14 @@ if ($query->num_rows() > 0)
 		#$CI->db->where('dignity_blogs_comuser_id', $onepage['comusers_id']);
 		#$all_topics_views = $CI->db->count_all_results();
 
-       	$out .= '<span style="width: 60%; float:left;">' . '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '">' 
+		// путь к картинкам
+		$path = getinfo('plugins_url') . 'dignity_blogs/img/';
+
+       	$out .= '<span style="width: 50%; float:left;">' . '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '">' 
 			. t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>' . '</span>';
        	$out .= '<span style="width: 20%; float:left;">' . $topics_in_blogs . '</span>';
        	$out .= '<span style="width: 20%; float:left;">' . $comments_in_blogs . '</span>';
-       	#$out .= '<span style="width: 20%; float:left;">' . $all_topics_views . '</span>';
+       	$out .= '<span style="width: 10%; float:left;"><a href="' . getinfo('site_url') . $options['slug'] . '/feed/' . $onepage['dignity_blogs_comuser_id'] . '"><img src="' . $path . 'feed.png' . '" alt="" title="RSS лента"></a></span>';
 	}
 	
 	echo $out;
