@@ -60,10 +60,39 @@ if ($query->num_rows() > 0)
 	
 	$out = '';
 	
+	$out .= '<span style="width: 60%; float:left; font-weight:bold;">' . t('Блог', __FILE__) . '</span>';
+    $out .= '<span style="width: 20%; float:left; font-weight:bold;">' . t('Тем', __FILE__) . '</span>';
+    $out .= '<span style="width: 20%; float:left; font-weight:bold;">' . t('Комментарий', __FILE__) . '</span>';
+    #$out .= '<span style="width: 20%; float:left; font-weight:bold;">' . t('Просмотров', __FILE__) . '</span>';
+
 	foreach ($allpages as $onepage) 
 	{
-		
-		$out .= '<h2><a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '">' . t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a></h2>';
+
+		// узнаём количество тем
+		$CI->db->from('dignity_blogs');
+		$CI->db->where('dignity_blogs_approved', true);
+		$CI->db->where('dignity_blogs_comuser_id', $onepage['comusers_id']);
+		$topics_in_blogs = $CI->db->count_all_results();
+
+		// узнаём количество комментарий
+		$CI->db->join('dignity_blogs', 'dignity_blogs.dignity_blogs_id = dignity_blogs_comments.dignity_blogs_comments_thema_id');
+		$CI->db->from('dignity_blogs_comments');
+		$CI->db->where('dignity_blogs_comments_approved', true);
+		$CI->db->where('dignity_blogs_comuser_id', $onepage['comusers_id']);
+		$CI->db->order_by('dignity_blogs_comuser_id', $onepage['comusers_id']);
+		$comments_in_blogs = $CI->db->count_all_results();
+
+		// узнаём количество просмотров тем (позже реализую)
+		#$CI->db->from('dignity_blogs');
+		#$CI->db->where('dignity_blogs_approved', true);
+		#$CI->db->where('dignity_blogs_comuser_id', $onepage['comusers_id']);
+		#$all_topics_views = $CI->db->count_all_results();
+
+       	$out .= '<span style="width: 60%; float:left;">' . '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '">' 
+			. t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>' . '</span>';
+       	$out .= '<span style="width: 20%; float:left;">' . $topics_in_blogs . '</span>';
+       	$out .= '<span style="width: 20%; float:left;">' . $comments_in_blogs . '</span>';
+       	#$out .= '<span style="width: 20%; float:left;">' . $all_topics_views . '</span>';
 	}
 	
 	echo $out;

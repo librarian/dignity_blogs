@@ -11,9 +11,6 @@ if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 // доступ к CI
 $CI = & get_instance();
 
-// выводим меню
-blogs_menu();
-
 // загружаем опции
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
@@ -27,7 +24,17 @@ mso_head_meta('title', $options['title']);
 mso_head_meta('description', $options['description']);
 mso_head_meta('keywords', $options['keywords']);
 
-// готовим пагинацию
+// выводим меню
+blogs_menu();
+
+echo '<h1>' . $options['title'] . '</h1>';
+
+if ($options['textdo'])
+{
+	echo '<p>' . $options['textdo'] . '</p>';
+}
+
+// готовим пагинацию для статей
 $pag = array();
 $pag['limit'] = $options['limit'];
 $CI->db->select('dignity_blogs_id');
@@ -51,6 +58,7 @@ else
 	$pag = false;
 }
 
+// загружаем статьи из базы
 $CI->db->from('dignity_blogs');
 $CI->db->where('dignity_blogs_approved', true);
 $CI->db->where('dignity_blogs_ontop', true);
@@ -67,9 +75,6 @@ if ($query->num_rows() > 0)
 	$allpages = $query->result_array();
 	
 	$out = '';
-    
-    $out .= '<h1>' . $options['title'] . '</h1>';
-    $out .= '<p style="border:solid 1px #DBE0E4; padding:10px; background:#FFFFE1;">' . $options['textdo'] . '</p>';
 	
 	foreach ($allpages as $onepage) 
 	{
@@ -109,8 +114,10 @@ if ($query->num_rows() > 0)
 		}
 		
 		$out .= '<div class="info info-bottom">'
-			. '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/public.png' . '"></span>' . mso_date_convert($format = 'd.m.Y → H:i', $onepage['dignity_blogs_datecreate']);
-		
+			. '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/public.png' . '"></span>';
+
+		$out .= mso_date_convert($format = 'd.m.Y → H:i', $onepage['dignity_blogs_datecreate']);
+
 		if ($onepage['dignity_blogs_category_id'])
 		{
 			$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '/category/' . $onepage['dignity_blogs_category_id'] . '">' . $onepage['dignity_blogs_category_name'] . '</a>';
