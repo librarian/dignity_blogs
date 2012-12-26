@@ -1,10 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-/**
+/*
  * (c) Alexander Schilling
  * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
-
 // начало шаблона
 if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 
@@ -22,7 +23,7 @@ blogs_menu();
 // добавляем заголовок
 echo '<h1><a href="' . getinfo('siteurl') . $options['slug'] . '">' . t('Новые записи', __FILE__) . '</a></h1>';
 
-// готовим пагинацию
+// готовим пагинацию записей
 $pag = array();
 $pag['limit'] = $options['limit'];
 $CI->db->select('dignity_blogs_id');
@@ -48,7 +49,7 @@ else
 	$pag = false;
 }
 	
-// берём данные из базы
+// берём записи из базы
 $CI->db->from('dignity_blogs');
 if (!is_login())
 {

@@ -1,8 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-/**
+/*
  * (c) Alexander Schilling
  * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
 
 // начало шаблона
@@ -26,7 +28,7 @@ else $id = (int) $id;
 
 if ($id)
 {
-	// готовим пагинацию
+	// готовим пагинацию статей
 	$pag = array();
 	$pag['limit'] = $options['limit'];
 	$CI->db->from('dignity_blogs');
@@ -50,7 +52,7 @@ if ($id)
 		$pag = false;
 	}
 
-	// загружаем данные из базы
+	// берем статьи из базы
 	$CI->db->from('dignity_blogs');
 	$CI->db->where('dignity_blogs_comuser_id', $id);
 	$CI->db->order_by('dignity_blogs_datecreate', 'desc');
@@ -65,58 +67,73 @@ if ($id)
 		
 		$out = '';
 		
-                foreach ($allpages as $onepage) 
-                {
-                        $out .= '<div class="page_only">';
+        foreach ($allpages as $onepage) 
+        {
+            $out .= '<div class="blogs_page_only">';
 			
-			$no_approved = '';
-			if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
-			{
-				if (!$onepage['dignity_blogs_approved'])
+				$no_approved = '';
+				if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
 				{
-					$no_approved .= '<span style="color:red;">?</span>';
+					if (!$onepage['dignity_blogs_approved'])
+					{
+						$no_approved .= '<span style="color:red;">?</span>';
+					}
 				}
-			}
-		
-                        $out .= '<div class="info info-top"><h1>' . $no_approved;
 			
-			if($onepage['dignity_blogs_approved'])
-			{
-				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">';
-			}
-			else
-			{
-				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '">';
-			}
+	            $out .= '<div class="blogs_info">';
+		            $out .= '<h1>' . $no_approved;
+					
+					if($onepage['dignity_blogs_approved'])
+					{
+						$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">';
+					}
+					else
+					{
+						$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '">';
+					}
+					
+					$out .= $onepage['dignity_blogs_title'] . '</a> ';
+		                        
+		            $out .= '</h1>';
+	            $out .= '</div>';
+	                        		
+	            // если вошел автор записи
+		       	if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
+		       	{
+		            // выводим ссылку «редактировать»
+		            $out .= '<div class="blogs_info_edit">';
+						$out .= '<p>';
+						$out .= '<span>';
+						$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '" alt="">';
+						$out .= '</span>';
+						$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '" title="' . t('Редактировать статью', __FILE__) . '">' . t('Редактировать', __FILE__) . '</a>';
+						$out .= '</p>';
+					$out .= '</div>';
+				}
 			
-			$out .= $onepage['dignity_blogs_title'] . '</a> ';
-                        
-                        $out .= '</h1></div>';
-                        		
-                        // если вошел автор
-                        if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
-                        {
-                                // выводим ссылку «редактировать»
-                                $out .= '<p><span style="padding-right:10px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '">' . t('Редактировать', __FILE__) . '</a></p>';
-                        }
-		
-                        $out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
-		
-                        // если нет текста, скрываем ссылку «подробнее»
-                        if (!$onepage['dignity_blogs_text'])
-                        {
-                                $out .= '';
-                        }
-                        else
-                        {
-                                $out .= '<p style="padding-bottom:10px;"><a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '">' .
-                                	t('Подробнее»', __FILE__) . '</a></p>';
-                        }
+	            // выводим анонс статьи
+				$out .= '<div class="blogs_info_cuttext">';
+					$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
+				$out .= '</div>';
 			
-			$out .= '<div class="info info-bottom"></div>';
-			$out .= '<div class="break"></div>';
-			$out .= '</div><!--div class="page_only"-->';
-                }
+	            // если нет текста, скрываем ссылку «подробнее»
+				if ($onepage['dignity_blogs_text'])
+				{
+					// показываем ссылку «подробнее»
+					$out .= '<div class="blogs_info_text">';
+						$out .= '<p>';
+						$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/view/' . $onepage['dignity_blogs_id'] . '" title="' . t('Показать всю статью', __FILE__) . '">' .
+							t('Подробнее →', __FILE__) . '</a>';
+						$out .= '</p>';
+					$out .= '</div>';
+				}
+				
+				$out .= '<div class="blogs_info"></div>';
+
+				$out .= '<div class="break"></div>';
+
+			$out .= '</div><!--div class="blog_page_only"-->';
+        }
 		
 		echo $out;
 

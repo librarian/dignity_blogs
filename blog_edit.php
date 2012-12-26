@@ -1,11 +1,12 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-/**
- *
- * Alexander Schilling
- * (c) http://dignityinside.org
- *
+/*
+ * (c) Alexander Schilling
+ * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
+
 
 // начало шаблона 
 if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
@@ -62,9 +63,9 @@ if ($id && is_login_comuser())
 			mso_checkreferer();
 	
 			$data = array (
-				'dignity_blogs_title' => htmlspecialchars($post['f_dignity_blogs_title']),
-				'dignity_blogs_cuttext' => htmlspecialchars($post['f_dignity_blogs_cuttext']),
-				'dignity_blogs_text' => htmlspecialchars($post['f_dignity_blogs_text']),
+				'dignity_blogs_title' => htmlspecialchars(mso_xss_clean($post['f_dignity_blogs_title'])),
+				'dignity_blogs_cuttext' => htmlspecialchars(mso_xss_clean($post['f_dignity_blogs_cuttext'])),
+				'dignity_blogs_text' => htmlspecialchars(mso_xss_clean($post['f_dignity_blogs_text'])),
 				'dignity_blogs_dateupdate' => date('Y-m-d H:i:s'),
 				'dignity_blogs_approved' => isset($post['f_dignity_blogs_approved']) ? 1 : 0,
 				'dignity_blogs_comments' => isset($post['f_dignity_blogs_comments']) ? 1 : 0,

@@ -3,6 +3,8 @@
 /**
  * (c) Alexander Schilling
  * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
 
 echo '<h1>' . t('Блоги', __FILE__) . '</h1>';
@@ -10,9 +12,9 @@ echo '<p class="info">' . t('Панель управления плагином.
 
 // админ-меню
 echo '<div class="admin-h-menu">';
-$plugin_url = getinfo('site_admin_url') . 'dignity_blogs';
-$a  = mso_admin_link_segment_build($plugin_url, '', t('Настройки', __FILE__), 'select');
-echo $a;
+	$plugin_url = getinfo('site_admin_url') . 'dignity_blogs';
+	$a  = mso_admin_link_segment_build($plugin_url, '', t('Настройки', __FILE__), 'select');
+	echo $a;
 echo '</div>';
 
 // получаем доступ к CI
@@ -81,7 +83,7 @@ if ( (bool)$options['ontop'] )
 {
 	$chckout = 'checked="true"';
 } 
-$form .= '<p>' . t('Сразу на главную?', __FILE__)
+$form .= '<p>' . t('Добавлять автоматически новые записи в избранное?', __FILE__)
 	. ' <input name="f_ontop" type="checkbox" ' . $chckout . '></p>';
 	
 // не проверять комментарии

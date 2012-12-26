@@ -1,8 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-/**
+/*
  * (c) Alexander Schilling
  * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
 
 // начало шаблона
@@ -22,7 +24,7 @@ blogs_menu();
 // добавляем заголовок
 echo '<h1><a href="' . getinfo('siteurl') . $options['slug'] . '">' . t('Новые комментарии', __FILE__) . '</a></h1>';
 
-// готовим пагинацию
+// готовим пагинацию комментарий
 $pag = array();
 $pag['limit'] = $options['limit'];
 $CI->db->select('dignity_blogs_comments_id');
@@ -48,7 +50,7 @@ else
 	$pag = false;
 }
 	
-// берём данные из базы
+// берём комментарии из базы
 $CI->db->from('dignity_blogs_comments');
 $CI->db->join('comusers', 'comusers.comusers_id = dignity_blogs_comments.dignity_blogs_comments_comuser_id', 'left');
 $CI->db->order_by('dignity_blogs_comments_datecreate', 'desc');

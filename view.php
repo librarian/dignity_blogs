@@ -3,6 +3,8 @@
 /**
  * (c) Alexander Schilling
  * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
 
 // начало шаблона
@@ -29,7 +31,7 @@ else $id = (int) $id;
 // если число
 if ($id)
 {
-	
+	// берём запись из базы
 	$CI->db->from('dignity_blogs');
 	$CI->db->where('dignity_blogs_id', $id);
 	$CI->db->where('dignity_blogs_approved', true);
@@ -51,7 +53,7 @@ if ($id)
 			
 			global $_COOKIE;
 			$name_cookies = 'dignity-blogs';
-			$expire = 2592000;
+			$expire = 2592000; // 30 дней
 			$slug = getinfo('siteurl') . $options['slug'] . '/' . mso_segment(2) . '/' . mso_segment(3);
 			$all_slug = array();
 			
@@ -82,41 +84,87 @@ if ($id)
 			
 			//<- выводим запись
 			
-			$out .= '<div class="page_only">';
+			$out .= '<div class="blogs_page_only">';
 		
-				$out .= '<div class="info info-top">';
-					$out .= '<h1><a href="' . getinfo('site_url') . $options['slug'] . '">' . $onepage['dignity_blogs_title'] . '</a></h1>';
+				$out .= '<div class="blogs_info">';
+					$out .= '<h1>';
+					$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '">' . $onepage['dignity_blogs_title'] . '</a>';
+					$out .= '</h1>';
 				$out .= '</div>';
 				
-			// если вошел автор
-			if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
-			{
-				// выводим ссылку «редактировать»
-				$out .= '<p><span style="padding-right:10px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '">' . t('Редактировать', __FILE__) . '</a></p>';
+			// если вошел автор записи
+	       	if ($onepage['dignity_blogs_comuser_id'] == getinfo('comusers_id'))
+	       	{
+	            // выводим ссылку «редактировать»
+	            $out .= '<div class="blogs_info_edit">';
+					$out .= '<p>';
+					$out .= '<span>';
+					$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '" alt="">';
+					$out .= '</span>';
+					$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/edit/' . $onepage['dignity_blogs_id'] . '" title="' . t('Редактировать статью', __FILE__) . '">' . t('Редактировать', __FILE__) . '</a>';
+					$out .= '</p>';
+				$out .= '</div>';
 			}
 		
-			$out .= '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/user.png' . '"></span> <a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '">' . t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>';
+			// выводим надпись и ссылку "блог им."
+			$out .= '<div class="blogs_info_blog_name">';
+				$out .= '<p>';
+				$out .= '<span>';
+				$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/user.png' . '" alt="">';
+				$out .= '</span>';
+				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '" title="' . t('Перейти на блог пользователя', __FILE__) . '">' . t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>';
+				$out .= '</p>';
+			$out .= '</div>';
 			
-			$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
-			$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_text']) . '</p>';
+			// выводим анонс статьи
+			$out .= '<div class="blogs_info_cuttext">';
+				$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
+			$out .= '</div>';
+
+			// выводим весь текст
+			$out .= '<div class="blogs_info_text">';
+				$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_text']) . '</p>';
+			$out .= '</div>';
 		
-			$out .= '<div class="info info-bottom">'
-				. '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/views.png' . '" title="' . t('Просмотров', __FILE__) . '"></span>' . $onepage['dignity_blogs_views'] . ' | '
-				. '<span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/public.png' . '" title="' . t('Дата публикации', __FILE__) . '"></span>' . mso_date_convert($format = 'd.m.Y → H:i', $onepage['dignity_blogs_datecreate']);
+			$out .= '<div class="blogs_info">';
+
+				// количество просмотров
+				$out .='<span style="padding-right:5px;">';
+				$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/views.png' . '" title="' . t('Просмотров', __FILE__) . '">';
+				$out .= '</span>';
+				$out .= $onepage['dignity_blogs_views'];
+
+				$out .= ' | ';
+
+				// дата
+				$out .= '<span style="padding-right:5px;">';
+				$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/public.png' . '" title="' . t('Дата публикации', __FILE__) . '">';
+				$out .= '</span>';
+				$out .= mso_date_convert($format = 'd.m.Y → H:i', $onepage['dignity_blogs_datecreate']);
+
+				// выводим категорию
 				if ($onepage['dignity_blogs_category_id'])
 				{
-					$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '" title="' . t('Категория', __FILE__) . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '/category/' . $onepage['dignity_blogs_category_id'] . '">' . $onepage['dignity_blogs_category_name'] . '</a>';
+					$out .= ' | ';
+					$out .= '<span style="padding-right:0px;">';
+					$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '" alt="">';
+					$out .= '</span>';
+					$out .= ' <a href="' . getinfo('site_url') . $options['slug'] . '/category/' . $onepage['dignity_blogs_category_id'] . '">' . $onepage['dignity_blogs_category_name'] . '</a>';
 				}
 				else
 				{
-					$out .= ' | ' . '<span style="padding-right:0px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '" title="' . t('Категория', __FILE__) . '"></span>' . ' <a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Все записи', __FILE__) . '</a>';
+					$out .= ' | ';
+					$out .= '<span style="padding-right:0px;">';
+					$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/ordner.png' . '" alt="">';
+					$out .= '</span>';
+					$out .= ' <a href="' . getinfo('site_url') . $options['slug'] . '" title="' . t('Все записи', __FILE__) . '">' . t('Все записи', __FILE__) . '</a>';
 				}
-				
+					
 				$out .= blogs_yandex_share();
 				
 			$out .= '</div>';
 			
-			$out .= '<div class="break"></div>';
+			$out .= '<div class="blogs_break"></div>';
 			
 			$out .= '</div>';
 			
@@ -133,6 +181,7 @@ if ($id)
 
 		//<- выводим комментарии
 		
+		// готовим пагинацию
 		if ($options['no_pagination'])
 		{
 			$pag = array();
@@ -164,6 +213,7 @@ if ($id)
 
 		}
 
+		// берём комментарии из базы
 		$CI->db->from('dignity_blogs_comments');
 		$CI->db->where('dignity_blogs_comments_approved', true);
 		$CI->db->where('dignity_blogs_comments_thema_id', $id);
@@ -183,7 +233,9 @@ if ($id)
 	
 			$comments_out = '';
 			
-			$comments_out .= '<div class="leave_a_comment">Комментарии через наш сайт:</div>';
+			$comments_out .= '<div class="blogs_leave_a_comment">';
+				$comments_out .= t('Комментарии через наш сайт:', __FILE__);
+			$comments_out .= '</div>';
 			
 			$comments_out .= '<ol>';
 	
@@ -199,16 +251,24 @@ if ($id)
 					$avatar = getinfo('plugins_url') . 'dignity_blogs/img/noavatar.jpg';
 				}
 				
-				$comments_out .= '<div class="type type_page_comments">
-				<div class="comments">
-				<li style="clear: both" class="users">
-					<div class="comment-info">
-					<span class="date"><img src="' . $avatar . '" height="40px" width="40px" style="padding:3px 15px 3px 0px;">' .
-					t('Комментарий от ', __FILE__) . '<a href="' . getinfo('site_url') . 'users/' . $onecomment['comusers_id'] . '">' . $onecomment['comusers_nik'] . '</a>' . ' в ' . mso_date_convert($format = 'H:i → d.m.Y', $onecomment['dignity_blogs_comments_datecreate']) . '</span></div>
-					<div class="comments_content"><p>' . blogs_cleantext($onecomment['dignity_blogs_comments_text']) . '</p></div>
-				</li></div>
-				<div class="break"></div>
-				</div>';
+				$comments_out .= '<div class="blogs_comments">';
+					$comments_out .= '<li style="clear: both;" class="users">';
+						$comments_out .= '<div class="blogs_comment_info">';
+							$comments_out .= '<span class="date">';
+							$comments_out .= '<img src="' . $avatar . '" height="40px" width="40px" style="padding:3px 15px 3px 0px;">';
+							$comments_out .= t('Комментарий от ', __FILE__);
+							$comments_out .= '<a href="' . getinfo('site_url') . 'users/' . $onecomment['comusers_id'] . '">' . $onecomment['comusers_nik'] . '</a>';
+							$comments_out .= t(' в ', __FILE__);
+							$comments_out .= mso_date_convert($format = 'H:i → d.m.Y', $onecomment['dignity_blogs_comments_datecreate']);
+							$comments_out .= '</span>';
+						$comments_out .= '</div>';
+						$comments_out .= '<div class="blogs_comments_content">';
+							$comments_out .= '<p>' . blogs_cleantext($onecomment['dignity_blogs_comments_text']) . '</p>';
+						$comments_out .= '</div>';
+					$comments_out .= '</li>';
+				$comments_out .= '</div>';
+
+				$comments_out .= '<div class="blogs_break"></div>';
 			}
 			
 			$comments_out .= '</ol>';
@@ -226,7 +286,7 @@ if ($id)
 		}
 		else
 		{
-			echo '<div class="leave_a_comment">Комментарии через наш сайт:</div>';
+			echo '<div class="blogs_leave_a_comment">Комментарии через наш сайт:</div>';
 			echo '<p>' . t('Нет комментариев. Ваш будет первым!', __FILE__) . '</p>';
 		}
 		
@@ -269,20 +329,21 @@ if ($id)
 				if ($res)
 				{
 					echo '<div class="update">';
-					echo t('Комментарий добавлен!', __FILE__);
-					
-					if (!$options['noapproved'])
-					{
-						echo '<br>' . t('После проверки он будет опубликован.', __FILE__);
-					}
-					echo '</div>';
+
+					echo '<p>' . t('Комментарий добавлен!', __FILE__) . '</p>';
 					
 					if ($options['noapproved'])
 					{
 						echo '<script>location.replace(window.location); </script>';
 					}
+					else
+					{
+						echo '<p>' . t('После проверки он будет опубликован.', __FILE__) . '</p>';
+					}
+
+					echo '</div>';
 				}
-				else echo '<div class="error">' . t('Ошибка добавления в базу данных...', __FILE__) . '</div>';
+				else echo '<div class="error"><p>' . t('Ошибка добавления в базу данных...', __FILE__) . '</p></div>';
 		
 				 // сбрасываем кеш
 				mso_flush_cache();
@@ -304,7 +365,7 @@ if ($id)
 
 			if ($options['cackle_code'])
 			{
-					echo '<div class="leave_a_comment">Комментарии через социальные сети:</div>';
+					echo '<div class="blogs_leave_a_comment">Комментарии через социальные сети:</div>';
 					echo $options['cackle_code'];
 			}
 		}
@@ -313,34 +374,48 @@ if ($id)
 			// если не комюзер
 			if (!is_login_comuser())
 			{
-			    	echo '<p style="border:solid 1px #DBE0E4; padding:10px; background:#FFFFE1;">' . t('Чтобы оставить свой комментарий, вам нужно', __FILE__) . ' <a href="' . getinfo('siteurl') . 'registration">' . t('зарегистироваться', __FILE__) . '</a> ' . t('или',__FILE__) . ' <a href="' . getinfo('siteurl') . 'login">' . t('войти на сайт', __FILE__) . '.</a></p>';	
+					// предлагаем войти или зарегистироваться на сайте
+					$please_login = '';
+					$please_login .= '<div class="blogs_please_login">';
+				    	$please_login .= '<p>';
+				    	$please_login .= t('Чтобы оставить свой комментарий, вам нужно', __FILE__);
+				    	$please_login .= ' <a href="' . getinfo('siteurl') . 'registration">' . t('зарегистироваться', __FILE__) . '</a> ';
+				    	$please_login .= t('или',__FILE__);
+				    	$please_login .= ' <a href="' . getinfo('siteurl') . 'login">' . t('войти на сайт', __FILE__) . '.</a>';
+				    	$please_login .= '</p>';
+			    	$please_login .= '</div>';
+			    	echo $please_login;
 
+			    	// выводим cackle комментарии
 					if ($options['cackle_code'])
 					{
-						echo '<div class="leave_a_comment">Комментарии через социальные сети:</div>';
+						echo '<div class="blogs_leave_a_comment">';
+						echo t('Комментарии через социальные сети:', __FILE__);
+						echo '</div>';
+
 						echo $options['cackle_code'];
 					}
 
 			}
 			else
 			{
-				echo '<p>' . t('Эту запись нельзя комментировать.', __FILE__) . '</p>';
+				echo '<p>' . t('Запись нельзя комментировать.', __FILE__) . '</p>';
 			}
 		}
 		
 	}
 	else
 	{
-		echo '<h1>' . tf('404. Ничего не найдено...') . '</h1>';
-		echo '<p>' . tf('Извините, ничего не найдено') . '</p>';
+		echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+		echo '<p>' . t('Извините, ничего не найдено') . '</p>';
 		echo mso_hook('page_404');
 		
 	}	
 }
 else
 {
-	echo '<h1>' . tf('404. Ничего не найдено...') . '</h1>';
-	echo '<p>' . tf('Извините, ничего не найдено') . '</p>';
+	echo '<h1>' . t('404. Ничего не найдено...') . '</h1>';
+	echo '<p>' . t('Извините, ничего не найдено') . '</p>';
 	echo mso_hook('page_404');
 }
 

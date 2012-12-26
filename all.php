@@ -3,6 +3,8 @@
 /**
  * (c) Alexander Schilling
  * http://alexanderschilling.net
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
 
 // начало шаблона
@@ -19,7 +21,7 @@ $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
 
-// готовим пагинацию
+// готовим пагинацию блогов
 $pag = array();
 $pag['limit'] = $options['limit'];
 $CI->db->select('dignity_blogs_id');
@@ -44,6 +46,7 @@ else
 	$pag = false;
 }
 
+// берём данные из базы
 $CI->db->from('dignity_blogs');
 $CI->db->where('dignity_blogs_approved', true);
 $CI->db->order_by('dignity_blogs_comuser_id', 'asc');

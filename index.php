@@ -1,10 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
 /**
- *
  * (c) Alexander Schilling
  * http://alexanderschilling.net
- *
+ * https://github.com/dignityinside/dignity_blogs (github)
+ * License GNU GPL 2+
  */
 
 function dignity_blogs_autoload()
@@ -12,12 +12,12 @@ function dignity_blogs_autoload()
 	mso_hook_add('admin_init', 'dignity_blogs_admin_init');
 	mso_hook_add('custom_page_404', 'dignity_blogs_custom_page_404');
 	
-	// подключаем плагин jquery
+	// подключаем плагин jquery для подсчёта количества введеных символов
 	mso_hook_add('head','blogs_char_count_js_head');
 	
-	// регестируем виджет
+	// регестируем виджеты
 	mso_register_widget('dignity_blogs_category_widget', t('Категории блогов', __FILE__));
-	mso_register_widget('dignity_blogs_new_widget', t('Новы записи в блогах', __FILE__));
+	mso_register_widget('dignity_blogs_new_widget', t('Новые записи в блогах', __FILE__));
 }
 
 function dignity_blogs_activate($args = array())
@@ -25,7 +25,7 @@ function dignity_blogs_activate($args = array())
 	mso_create_allow('dignity_blogs_edit', t('Админ-доступ к', 'plugins') . ' ' . t('«Блоги»', __FILE__));
 	
 	// доступ к CI
-        $CI = & get_instance();	
+    $CI = & get_instance();	
 
 	// создаём табилицу для записей
 	if ( !$CI->db->table_exists('dignity_blogs'))
@@ -92,13 +92,14 @@ function dignity_blogs_activate($args = array())
 		dignity_blogs_category_name longtext NOT NULL default '',
 		dignity_blogs_category_description longtext NOT NULL default '',
 		dignity_blogs_category_position bigint(20) NOT NULL default '0',
+		dignity_blogs_category_parent_id bigint(20) NOT NULL default '0',
 		PRIMARY KEY (dignity_blogs_category_id)
 		)" . $charset_collate;
 		
 		$CI->db->query($sql);
 	}
 	
-	// создаём табилицу для тэгов
+	// создаём табилицу для тэгов (на будущее)
 	if ( !$CI->db->table_exists('dignity_blogs_tags_entrys'))
 	{
 		$charset = $CI->db->char_set ? $CI->db->char_set : 'utf8';
@@ -116,7 +117,7 @@ function dignity_blogs_activate($args = array())
 		$CI->db->query($sql);
 	}
 	
-	// создаём табилицу для тэгов
+	// создаём табилицу для тэгов (на будущее)
 	if ( !$CI->db->table_exists('dignity_blogs_tags'))
 	{
 		$charset = $CI->db->char_set ? $CI->db->char_set : 'utf8';
@@ -150,13 +151,20 @@ function dignity_blogs_uninstall($args = array())
 	$CI->dbforge->drop_table('dignity_blogs');
 	$CI->dbforge->drop_table('dignity_blogs_comments');
 	$CI->dbforge->drop_table('dignity_blogs_category');
+	$CI->dbforge->drop_table('dignity_blogs_tags_entrys');
+	$CI->dbforge->drop_table('dignity_blogs_tags');
 	
 	// удаляем настройки виджета
 	mso_delete_option_mask('dignity_blogs_category_widget_', 'plugins');
 	mso_delete_option_mask('dignity_blogs_new_widget_', 'plugins');
 
+	// сбрасываем кеш
+	mso_flush_cache();
+
 	return $args;
 }
+
+//<- начало первого виджета
 
 # функция, которая берет настройки из опций виджетов
 function dignity_blogs_category_widget($num = 1) 
@@ -173,17 +181,16 @@ function dignity_blogs_category_widget_custom($options = array(), $num = 1)
 	// получаем доступ к CI
 	$CI = & get_instance();
 	
-	// обьявляем переменую
 	$out = '';
 	
 	// загружаем опции
 	$options = mso_get_option('plugin_blogs_plugins', 'plugins', array());
 	if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
 	
-	// добавляем заголовок «Категории»
+	// добавляем заголовок «категории»
 	$out .= mso_get_val('widget_header_start', '<h2 class="box"><span>') . t('Категории', __FILE__) . mso_get_val('widget_header_end', '</span></h2>');
 	
-	// берём данные из базы
+	// берём категори из базы
 	$CI->db->from('dignity_blogs_category');
 	$CI->db->order_by('dignity_blogs_category_position', 'asc');
 	$query = $CI->db->get();
@@ -193,10 +200,8 @@ function dignity_blogs_category_widget_custom($options = array(), $num = 1)
 	{	
 		$entrys = $query->result_array();
 		
-		// обьявлем переменую
-                $catout = '';
+        $catout = '';
 		
-		// цикл
 		foreach ($entrys as $entry) 
 		{
 			// узнаем количество записей в категории
@@ -205,9 +210,9 @@ function dignity_blogs_category_widget_custom($options = array(), $num = 1)
 			$CI->db->from('dignity_blogs');
 			$entry_in_cat = $CI->db->count_all_results();
 			
+			// если есть записи в категории
 			if ($entry_in_cat > 0)
 			{
-			
 				// выводим названия категории и количество записей в ней
 				$catout .= '<li><a href="' . getinfo('siteurl') . $options['slug'] . '/category/'
 				    . $entry['dignity_blogs_category_id'] . '">' . $entry['dignity_blogs_category_name'] . '</a>' . ' (' . $entry_in_cat . ') ' . '</li>';
@@ -234,6 +239,10 @@ function dignity_blogs_category_widget_custom($options = array(), $num = 1)
 	
 	return $out;	
 }
+
+//-> конец первого виджета
+
+// <- начало второго виджета
 
 # функция, которая берет настройки из опций виджетов
 function dignity_blogs_new_widget($num = 1) 
@@ -300,6 +309,8 @@ function dignity_blogs_new_widget_custom($options = array(), $num = 1)
 	return $out;	
 }
 
+// -> конец второго виджета
+
 function dignity_blogs_admin_init($args = array()) 
 {
 	if ( !mso_check_allow('dignity_blogs_edit') ) 
@@ -326,6 +337,7 @@ function dignity_blogs_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Блоги', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Блоги', __FILE__) . ' - " . $args; ' );
 
+	// на будущее
 	if ( mso_segment(3) == 'edit') require(getinfo('plugins_dir') . 'dignity_blogs/edit.php');
 	elseif ( mso_segment(3) == 'editone') require(getinfo('plugins_dir') . 'dignity_blogs/editone.php');
 	
@@ -351,52 +363,52 @@ function dignity_blogs_custom_page_404($args = false)
 		}
 		elseif(mso_segment(2) == 'blog')
 		{
-			// открываем view
+			// открываем blog - показываем все записи одного пользователя
 			require( getinfo('plugins_dir') . 'dignity_blogs/blog.php' );
 		}
 		elseif(mso_segment(2) == 'view')
 		{
-			// открываем view
+			// открываем view - показываем всю запись
 			require( getinfo('plugins_dir') . 'dignity_blogs/view.php' );
 		}
 		elseif(mso_segment(2) == 'all')
 		{
-			// открываем view
+			// открываем all - показываем все блоги
 			require( getinfo('plugins_dir') . 'dignity_blogs/all.php' );
 		}
 		elseif(mso_segment(2) == 'my')
 		{
-			// открываем view
+			// открываем my
 			require( getinfo('plugins_dir') . 'dignity_blogs/my.php' );
 		}
 		elseif(mso_segment(2) == 'category')
 		{
-			// открываем view
+			// открываем category
 			require( getinfo('plugins_dir') . 'dignity_blogs/category.php' );
 		}
 		elseif(mso_segment(2) == 'rss')
 		{
-			// открываем view
+			// открываем rss - rss лента всех записей
 			require( getinfo('plugins_dir') . 'dignity_blogs/rss.php' );
 		}
 		elseif(mso_segment(2) == 'comments')
 		{
-			// открываем view
+			// открываем comments - новые комментарии
 			require( getinfo('plugins_dir') . 'dignity_blogs/comments.php' );
 		}
 		elseif(mso_segment(2) == 'new')
 		{
-			// открываем view
+			// открываем new - новые записи
 			require( getinfo('plugins_dir') . 'dignity_blogs/new.php' );
 		}
 		elseif(mso_segment(2) == 'feed')
 		{
-			// открываем view
+			// открываем feed - rss лента блога
 			require( getinfo('plugins_dir') . 'dignity_blogs/feed.php' );
 		}
 		else
 		{
-			// открываем
+			// открываем избранные записи
 			require( getinfo('plugins_dir') . 'dignity_blogs/blogs.php' ) ;
 		}
 		
@@ -523,8 +535,8 @@ function dignity_blogs_editor()
 	// подключаем js от редактора markitup
 	echo '<script src="'. getinfo('plugins_url') . 'dignity_blogs/js/jquery.markitup.js"></script>';
 
-	// подключаем стили
-	echo '<link rel="stylesheet" href="'. getinfo('plugins_url') . 'dignity_blogs/style.css">';
+	// подключаем стили редактора
+	echo '<link rel="stylesheet" href="'. getinfo('plugins_url') . 'dignity_blogs/css/editor.css">';
  
 	echo "<script type=\"text/javascript\" >
 		var dignity_plugins_editor_settings = {
@@ -576,110 +588,87 @@ function blogs_menu()
         $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
         if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
         
-        echo "<style>
-        
-        .tabs{
-            border-bottom:solid 1px #dddddd;
-            padding-bottom:1px;
-            width: 100%;
-        }
-        
-        ul.tabs-nav {
-            margin: 0;
-            padding: 0;
-            height: 30px;
-            width: 100%;
-            list-style: none;
-        }
-        
-        ul.tabs-nav li.elem {
-            float: left;
-            display: inline;
-            position: relative;
-            line-height: 30px;
-            height: 30px;
-            margin: 0 2px 0 0;
-            padding: 0 5px;
-            cursor: pointer;
-            font-size: .9em;
-            background: #fff;
-            color: #888;
-            -webkit-border-radius: 5px 5px 0 0;
-            -moz-border-radius: 5px 5px 0 0;
-            border-radius: 5px 5px 0 0;
-            border:solid 1px #dddddd;
-        }
-        
-        ul.tabs-nav li.elem:hover,
-        ul.tabs-nav li.tabs-current {
-            background: #DDD;
-            color: black;
-        }
-        
-        </style>";
-        
-        echo '<div class="tabs"><ul class="tabs-nav">';
-        
-        if (mso_segment(2))
-        {
-            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/fav.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Избранные', __FILE__) . '</a></span></li>';
-        }
-        else
-        {
-            echo '<li class="elem tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/fav.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Избранные', __FILE__) . '</a></span></li>';
-        }
-        
-        if (mso_segment(2) == 'all')
-        {
-            echo '<li class="elem tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/all.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/all/' . '">' . t('Блоги', __FILE__) . '</a></span></li>';
-        }
-        else
-        {
-            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/all.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/all/' . '">' . t('Блоги', __FILE__) . '</a></span></li>';
-        }
-        
-        if (is_login_comuser())
+        echo '<div class="blogs_tabs">';
+	        echo '<ul class="blogs_tabs-nav">';
+	        
+	        if (mso_segment(2))
+	        {
+	            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/fav.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Избранные', __FILE__) . '</a></span></li>';
+	        }
+	        else
+	        {
+	            echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/fav.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '">' . t('Избранные', __FILE__) . '</a></span></li>';
+	        }
+	        
+	        if (mso_segment(2) == 'all')
+	        {
+	            echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/all.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/all/' . '">' . t('Блоги', __FILE__) . '</a></span></li>';
+	        }
+	        else
+	        {
+	            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/all.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/all/' . '">' . t('Блоги', __FILE__) . '</a></span></li>';
+	        }
+	        
+	        if (is_login_comuser())
+			{
+	           	if (mso_segment(2) == 'my')
+	            {
+	                echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/my.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/my/' . getinfo('comusers_id') . '">' . t('Мои записи', __FILE__) . '</a></span></li>';
+	            }
+	            else
+	            {
+	                 echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/my.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/my/' . getinfo('comusers_id') . '">' . t('Мои записи', __FILE__) . '</a></span></li>';
+	            }
+	        }
+	        
+			if (mso_segment(2) == 'add')
+	        {
+	            echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Новая запись', __FILE__) . '</a></span></li>';
+	        }
+	        else
+	        {
+	            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Новая запись', __FILE__) . '</a></span></li>';
+	        }
+	        
+			if (mso_segment(2) == 'new')
+		    {
+		        echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/new.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/new/' . '">' . t('Новые', __FILE__) . '</a></span></li>';
+		    }
+		    else
+		    {
+		        echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/new.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/new/' . '">' . t('Новые', __FILE__) . '</a></span></li>';
+		    }
+			
+			if (mso_segment(2) == 'comments')
+		    {
+		        echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/comments/' . '">' . t('Комментарии', __FILE__) . '</a></span></li>';
+		    }
+		    else
+		    {
+		        echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/comments/' . '">' . t('Комментарии', __FILE__) . '</a></span></li>';
+		    }
+		
+			echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/rss.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/rss/' . '">' . t('RSS', __FILE__) . '</a></span></li>';
+		
+	        echo '</ul>';
+        echo '</div>';
+        echo '<br />';
+}
+
+// подключаем css стили
+mso_hook_add('head', 'blogs_style_css');
+
+function blogs_style_css($a = array())
+{
+	if (file_exists(getinfo('plugins_url') . 'dignity_blogs/css/custom.css'))
 	{
-            if (mso_segment(2) == 'my')
-            {
-                echo '<li class="elem tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/my.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/my/' . getinfo('comusers_id') . '">' . t('Мои записи', __FILE__) . '</a></span></li>';
-            }
-            else
-            {
-                 echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/my.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/my/' . getinfo('comusers_id') . '">' . t('Мои записи', __FILE__) . '</a></span></li>';
-            }
-        }
-        
- if (mso_segment(2) == 'add')
-            {
-                echo '<li class="elem tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Новая запись', __FILE__) . '</a></span></li>';
-            }
-            else
-            {
-                 echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Новая запись', __FILE__) . '</a></span></li>';
-            }
-        
-	if (mso_segment(2) == 'new')
-        {
-            echo '<li class="elem tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/new.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/new/' . '">' . t('Новые', __FILE__) . '</a></span></li>';
-        }
-        else
-        {
-            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/new.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/new/' . '">' . t('Новые', __FILE__) . '</a></span></li>';
-        }
+		$css = getinfo('plugins_url') . 'dignity_blogs/css/custom.css';
+	} 
+	else $css = getinfo('plugins_url') . 'dignity_blogs/css/style.css';
+		
+	echo '<link rel="stylesheet" href="' . $css . '">' . NR;
 	
-	if (mso_segment(2) == 'comments')
-        {
-            echo '<li class="elem tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/comments/' . '">' . t('Комментарии', __FILE__) . '</a></span></li>';
-        }
-        else
-        {
-            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/comments/' . '">' . t('Комментарии', __FILE__) . '</a></span></li>';
-        }
-	
-	echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/rss.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/rss/' . '">' . t('RSS', __FILE__) . '</a></span></li>';
-	
-        echo '</ul></div><br>';
+	return $a;
 }
 
 #end of file
