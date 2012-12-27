@@ -120,6 +120,11 @@ div.blogs_please_login{
   background:#FFFFE1;
 }
 
+div.blogs_social{
+  padding-top: 20px;
+  font-size: 12px;
+}
+
 /* tabs menu */
 
 .blogs_tabs{

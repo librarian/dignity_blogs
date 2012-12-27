@@ -287,7 +287,7 @@ function dignity_blogs_new_widget_custom($options = array(), $num = 1)
 		{
 			// выводим названия категории и количество записей в ней
 			$catout .= '<li><a href="' . getinfo('siteurl') . $options['slug'] . '/view/'
-                                . $entry['dignity_blogs_id'] . '">' . $entry['dignity_blogs_title'] . '</a>' . '</li>';
+                        . $entry['dignity_blogs_id'] . '">' . $entry['dignity_blogs_title'] . '</a>' . '</li>';
 		}
 		
 		// начиаем новый список
@@ -337,10 +337,12 @@ function dignity_blogs_admin_page($args = array())
 	mso_hook_add_dinamic( 'mso_admin_header', ' return $args . "' . t('Блоги', __FILE__) . '"; ' );
 	mso_hook_add_dinamic( 'admin_title', ' return "' . t('Блоги', __FILE__) . ' - " . $args; ' );
 
-	// на будущее
-	if ( mso_segment(3) == 'edit') require(getinfo('plugins_dir') . 'dignity_blogs/edit.php');
-	elseif ( mso_segment(3) == 'editone') require(getinfo('plugins_dir') . 'dignity_blogs/editone.php');
-	
+	// редактировать комментарии (админ)
+	if ( mso_segment(3) == 'edit_comments') require(getinfo('plugins_dir') . 'dignity_blogs/admin/edit_comments.php');
+	elseif ( mso_segment(3) == 'editone_comment') require(getinfo('plugins_dir') . 'dignity_blogs/admin/editone_comment.php');
+	elseif ( mso_segment(3) == 'edit_article') require(getinfo('plugins_dir') . 'dignity_blogs/admin/edit_article.php');
+	elseif ( mso_segment(3) == 'editone_article') require(getinfo('plugins_dir') . 'dignity_blogs/admin/editone_article.php');
+
 	else require(getinfo('plugins_dir') . 'dignity_blogs/admin.php');
 }
 
@@ -429,6 +431,9 @@ function blogs_char_count_js_head()
 
 function blogs_yandex_share($out='')
 {
+
+	$out .= '<div class="blogs_social">' . t('Понравилась статья? Расскажи о ней друзьям в социальных сетях, им тоже должно понравиться!', __FILE__) . '</div>';
+
 	$out .= '<script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
 <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="icon" data-yashareQuickServices="vkontakte,facebook,twitter,gplus"></div>';
 	

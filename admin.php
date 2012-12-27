@@ -13,7 +13,9 @@ echo '<p class="info">' . t('Панель управления плагином.
 // админ-меню
 echo '<div class="admin-h-menu">';
 	$plugin_url = getinfo('site_admin_url') . 'dignity_blogs';
-	$a  = mso_admin_link_segment_build($plugin_url, '', t('Настройки', __FILE__), 'select');
+	$a  = mso_admin_link_segment_build($plugin_url, '', t('Настройки', __FILE__), 'select') . ' | ';
+	$a  .= mso_admin_link_segment_build($plugin_url, 'edit_comments', t('Комментарии', __FILE__), 'select') . ' | ';
+	$a  .= mso_admin_link_segment_build($plugin_url, 'edit_article', t('Статьи', __FILE__), 'select');
 	echo $a;
 echo '</div>';
 
