@@ -21,6 +21,10 @@ echo '</div>';
 
 // получаем доступ к CI
 $CI = & get_instance();
+
+// загружаем опции
+$options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
+if (!isset($options['slug']))  $options['slug'] = 'blogs';
 	
 // задаём значения по умолчению
 if ( !isset($post['f_dignity_blogs_cuttext'])) $post['f_dignity_blogs_cuttext'] = '';
@@ -36,13 +40,13 @@ else $id = (int) $id;
 // если число
 if ($id) {
 
-	// удаление ответа
+	// удаление статьи
 	if ( $post = mso_check_post(array('f_session_id', 'f_submit_dignity_blogs_article_delete')) )
 	{
 		// проверяем реферала
 		mso_checkreferer();
 		
-		// выбираем ответ согласно $id и удаляем его
+		// выбираем статью согласно $id и удаляем её
 		$CI->db->where('dignity_blogs_id', $id);
 		$CI->db->delete('dignity_blogs');
 		
@@ -74,10 +78,8 @@ if ($id) {
 		
 		// результат
 		if ($CI->db->update('dignity_blogs', $data ) )
-			// если всё окей
 			echo '<div class="update">' . t('Обновлено!', __FILE__) . '</div>';
 		else
-			// если ошибка
 			echo '<div class="error">' . t('Ошибка обновления', __FILE__) . '</div>';
 	
 		// сбрасываем кеш
@@ -99,6 +101,7 @@ if ($id) {
 		
 		foreach ($all_reply as $one_reply) 
 		{
+			$form .= '<a href="' . getinfo('siteurl') . $options['slug'] . '/view/' . $one_reply['dignity_blogs_id'] . '" target="blank">' . t('Перейти к статье', __FILE__) . '</a>';
 			
 			$form .= '<p><strong>' . t('Анонс (можно использовать bb-code):', __FILE__) . '</strong><span style="color:red;">*</span><br>'
 				. '<textarea name="f_dignity_blogs_cuttext"

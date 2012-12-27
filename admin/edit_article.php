@@ -66,7 +66,7 @@ if ($query->num_rows() > 0)
 			$autor = $one_reply['comusers_nik'];
 		}
 		
-		// автор
+		// опубликована
 		$public = '';
 		if ($one_reply['dignity_blogs_approved'])
 		{
