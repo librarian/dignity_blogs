@@ -20,6 +20,7 @@ blogs_menu();
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
+if (!isset($options['no_blog_name']))  $options['no_blog_name'] = true;
 
 // проверка сегмента
 $id = mso_segment(3);
@@ -160,8 +161,14 @@ if ($id)
         // путь к картинкам
 		$path = getinfo('plugins_url') . 'dignity_blogs/img/';
 
+		$hide_no_blog_name = '';
+		if ($options['no_blog_name'])
+		{
+			$hide_no_blog_name = t('Блог им. ', __FILE__);
+		}
+
 		echo '<h2>';
-		echo t('Блог им. ', __FILE__) . $onepage['comusers_nik'];
+		echo $hide_no_blog_name . $onepage['comusers_nik'];
 		echo ' ' . '<span style="float:right;"><a href="' . getinfo('site_url') . $options['slug'] . '/feed/' . $onepage['dignity_blogs_comuser_id'] . '"><img src="' . $path . 'feed.png' . '" alt="" title="RSS лента"></a></span>';
 		echo '</h2>';
 		

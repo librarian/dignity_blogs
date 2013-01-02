@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
 
-/**
+/*
  * (c) Alexander Schilling
  * http://alexanderschilling.net
  * https://github.com/dignityinside/dignity_blogs (github)
@@ -38,6 +38,7 @@ if ( $post = mso_check_post(array('f_session_id', 'f_submit')) )
     $options['textdo'] = $post['f_textdo'];
 	$options['cackle_code'] = $post['f_cackle_code'];
 	$options['no_pagination'] = isset($post['f_no_pagination']) ? 1 : 0;
+	$options['no_blog_name'] = isset($post['f_no_blog_name']) ? 1 : 0;
 	
 	mso_add_option($options_key, $options, 'plugins');
 	echo '<div class="update">' . t('Обновлено!', 'plugins') . '</div>';
@@ -97,6 +98,16 @@ if ( (bool)$options['noapproved'] )
 } 
 $form .= '<p>' . t('Не проверять комментарии', __FILE__)
 	. ' <input name="f_noapproved" type="checkbox" ' . $chckout . '></p>';
+
+// не показывать надпись "блог им."
+$chckout = ''; 
+if (!isset($options['no_blog_name']))  $options['no_blog_name'] = true;
+if ( (bool)$options['no_blog_name'] )
+{
+	$chckout = 'checked="true"';
+} 
+$form .= '<p>' . t('Не показывать надпись "блог им."', __FILE__)
+	. ' <input name="f_no_blog_name" type="checkbox" ' . $chckout . '></p>';
 
 $form .= '<input type="submit" name="f_submit" value="' . t('Сохранить', 'plugins') . '" style="margin: 25px 0 5px 0;">';
 $form .= '</form>';

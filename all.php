@@ -20,6 +20,7 @@ blogs_menu();
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
+if ( !isset($options['no_blog_name']))  $options['no_blog_name'] = true;
 
 // готовим пагинацию блогов
 $pag = array();
@@ -94,8 +95,14 @@ if ($query->num_rows() > 0)
 		// путь к картинкам
 		$path = getinfo('plugins_url') . 'dignity_blogs/img/';
 
+		$hide_no_blog_name = '';
+		if ($options['no_blog_name'])
+		{
+			$hide_no_blog_name = t('Блог им. ', __FILE__);
+		}
+
        	$out .= '<span style="width: 50%; float:left;">' . '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '">' 
-			. t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>' . '</span>';
+			. $hide_no_blog_name . $onepage['comusers_nik'] . '</a>' . '</span>';
        	$out .= '<span style="width: 20%; float:left;">' . $topics_in_blogs . '</span>';
        	$out .= '<span style="width: 20%; float:left;">' . $comments_in_blogs . '</span>';
        	$out .= '<span style="width: 10%; float:left;"><a href="' . getinfo('site_url') . $options['slug'] . '/feed/' . $onepage['dignity_blogs_comuser_id'] . '"><img src="' . $path . 'feed.png' . '" alt="" title="RSS лента"></a></span>';

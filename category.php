@@ -20,6 +20,7 @@ blogs_menu();
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
+if (!isset($options['no_blog_name']))  $options['no_blog_name'] = true;
 
 // готовим пагинацию записей
 $pag = array();
@@ -97,7 +98,15 @@ if ($query->num_rows() > 0)
 				$out .= '<span>';
 				$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/user.png' . '" alt="">';
 				$out .= '</span>';
-				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '" title="' . t('Перейти на блог пользователя', __FILE__) . '">' . t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>';
+
+				$hide_no_blog_name = '';
+				if ($options['no_blog_name'])
+				{
+					$hide_no_blog_name = t('Блог им. ', __FILE__);
+				}
+
+				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '" title="' . t('Перейти на блог пользователя', __FILE__) . '">' . $hide_no_blog_name . $onepage['comusers_nik'] . '</a>';
+				
 				$out .= '</p>';
 			$out .= '</div>';
 		

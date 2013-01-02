@@ -14,8 +14,9 @@ if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if (!isset($options['noapproved']))  $options['noapproved'] = true;
 if (!isset($options['slug']))  $options['slug'] = 'blogs';
-if ( !isset($options['cackle_code']) ) $options['cackle_code'] = '';
+if (!isset($options['cackle_code']) ) $options['cackle_code'] = '';
 if (!isset($options['no_pagination']))  $options['no_pagination'] = true;
+if (!isset($options['no_blog_name']))  $options['no_blog_name'] = true;
 
 // получаем доступ к CI
 $CI = & get_instance();
@@ -112,7 +113,14 @@ if ($id)
 				$out .= '<span>';
 				$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/user.png' . '" alt="">';
 				$out .= '</span>';
-				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '" title="' . t('Перейти на блог пользователя', __FILE__) . '">' . t('Блог им. ', __FILE__) . $onepage['comusers_nik'] . '</a>';
+
+				$hide_no_blog_name = '';
+				if ($options['no_blog_name'])
+				{
+					$hide_no_blog_name = t('Блог им. ', __FILE__);
+				}
+
+				$out .= '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . $onepage['dignity_blogs_comuser_id'] . '" title="' . t('Перейти на блог пользователя', __FILE__) . '">' . $hide_no_blog_name . $onepage['comusers_nik'] . '</a>';
 				$out .= '</p>';
 			$out .= '</div>';
 			

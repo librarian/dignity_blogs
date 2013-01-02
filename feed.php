@@ -10,6 +10,10 @@
 // получаем доступ к CI
 $CI = & get_instance();
 
+// загружаем опции
+$options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
+if (!isset($options['no_blog_name']))  $options['no_blog_name'] = true;
+
 // заголовки
 header('Content-type: text/html; charset=utf-8');
 header('Content-Type: application/rss+xml');
@@ -40,11 +44,17 @@ if ($id)
 				$comusers = $query->result_array();
 
 				$out = '';
+
+				$hide_no_blog_name = '';
+				if ($options['no_blog_name'])
+				{
+					$hide_no_blog_name = t('Блог им. ', __FILE__);
+				}
 					
 				foreach ($comusers as $comuser) 
 				{
 						echo("<channel>
-						<title>" . t('Блог им. ', __FILE__) . $comuser['comusers_nik'] . ' - ' . getinfo('name_site') . "</title>
+						<title>" . $hide_no_blog_name . $comuser['comusers_nik'] . ' - ' . getinfo('name_site') . "</title>
 						<link>" . getinfo('siteurl') . "</link>
 						<language>ru</language>
 						<pubDate>" . date('D, d M Y H:i:s') . "</pubDate>

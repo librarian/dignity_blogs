@@ -100,7 +100,7 @@ if (is_login_comuser())
 		$form .= '<p style="color:#b2b2b3;">' . t('Заголовок должен быть наполнен смыслом, чтобы можно было понять, о чем будет запись.', __FILE__) . '</p>';
 			
 		$form .= '<p><strong>' . t('Анонс:', __FILE__) . '</strong><br><textarea name="f_dignity_blogs_cuttext" class="markItUp"
-			cols="90" rows="5" value="" maxlength="1000" id="blogs_anonce"></textarea></p>';
+			cols="90" rows="5" value="" maxlength="1000" required="required" id="blogs_anonce"></textarea></p>';
 		
 		$form .= '<p><strong>' . t('Текст:', __FILE__) . '</strong><br><textarea name="f_dignity_blogs_text" class="markItUp"
 			cols="90" rows="10" value="" maxlength="30000" id="blogs_text"></textarea></p>';
