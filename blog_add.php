@@ -112,8 +112,8 @@ if (is_login_comuser())
 		{
 			$chckout = 'checked="true"';
 		}    
-		$form .= '<p>' . t('Опубликовать?', 'plugins') . ' <input name="f_dignity_blogs_approved" type="checkbox" ' . $chckout . '></p>';
-		$form .= '<p style="color:#b2b2b3;">' . t('Если убрать эту галку, то запись будет сохранена как черновик.', __FILE__) . '</p>';
+		$form .= '<p>' . t('Опубликовать статью?', 'plugins') . ' <input name="f_dignity_blogs_approved" type="checkbox" ' . $chckout . '></p>';
+		$form .= '<p style="color:#b2b2b3;">' . t('Если убрать эту галочку, то запись будет сохранена как черновик.', __FILE__) . '</p>';
 		
 		// разрешить комментарии?	
 		$chckout = ''; 
@@ -122,8 +122,8 @@ if (is_login_comuser())
 		{
 			$chckout = 'checked="true"';
 		}    
-		$form .= '<p>' . t('Разрешить комментировать?', 'plugins') . ' <input name="f_dignity_blogs_comments" type="checkbox" ' . $chckout . '></p>';
-		$form .= '<p style="color:#b2b2b3;">' . t('Если убрать эту галку, то нельзя будет оставлять комментарии к записи.', __FILE__) . '</p>';
+		$form .= '<p>' . t('Разрешить комментирование?', 'plugins') . ' <input name="f_dignity_blogs_comments" type="checkbox" ' . $chckout . '></p>';
+		$form .= '<p style="color:#b2b2b3;">' . t('Если убрать эту галочку, то нельзя будет оставлять комментарии к записи.', __FILE__) . '</p>';
 		
 		// выбрать категорию
 		$CI->load->helper('form');

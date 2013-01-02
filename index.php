@@ -495,18 +495,9 @@ function blogs_cleantext(&$content)
                 // ссылка
                 '~\[url\](.*?)\[\/url\]~si' => '<a href="$1" rel="nofollow">$1</a>',
                 '~\[url=(.[^ ]*?)\](.*?)\[\/url\]~si' => '<a href="$1" rel="nofollow">$2</a>',
-                
-                // youtube
-                '~\[youtube\](.*?)\[\/youtube\]~si' => '<iframe width="640" height="360" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>',
-                
-				// вконтакте
-                '~\[vk\](.*?)\[\/vk\]~si' => '<iframe src="$1" width="640" height="360" frameborder="0"></iframe>',
-				
-				// vimeo
-				'~\[vimeo\](.*?)\[\/vimeo\]~si' => '<iframe src="http://player.vimeo.com/video/$1" width="640" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
 
-				// yandex-video
-				'~\[yavideo\](.*?)\[\/yavideo\]~si' => '<iframe width="640" height="360" frameborder="0" src="$1"></iframe>',
+				// новый тэг для видео (вконтакте, яндекс-видео, vimeo и других)
+				'~\[video\](.*?)\[\/video\]~si' => '<iframe width="640" height="360" frameborder="0" src="$1"></iframe>',
 				
                 // горизонтальная линия
                 '~\[hr\]~si' => '<hr>',
@@ -544,7 +535,7 @@ function dignity_blogs_editor()
 	echo '<link rel="stylesheet" href="'. getinfo('plugins_url') . 'dignity_blogs/css/editor.css">';
  
 	echo "<script type=\"text/javascript\" >
-		var dignity_plugins_editor_settings = {
+		var dignity_blogs_editor_settings = {
 		
 		nameSpace:'bbcode',
 		
@@ -568,10 +559,7 @@ function dignity_blogs_editor()
 			{name:'Код', openBlockWith:'[code]', closeBlockWith:'[/code]', className:'code'}, 
 			{name:'Изображение', openWith:'[img]', closeWith:'[/img]', className:'picture'},
 			{name:'Ссылка', openBlockWith:'[url]', closeBlockWith:'[/url]', className:'link'},
-			{name:'Youtube-Видео', openBlockWith:'[youtube]', closeBlockWith:'[/youtube]', className:'youtube'},
-			{name:'Видко-Вконтакте', openBlockWith:'[vk]', closeBlockWith:'[/vk]', className:'vk'},
-			{name:'Vimeo-Видео', openBlockWith:'[vimeo]', closeBlockWith:'[/vimeo]', className:'vimeo'},
-			{name:'Яндекс-Видео', openBlockWith:'[yavideo]', closeBlockWith:'[/yavideo]', className:'ya_video'},
+			{name:'Видео', openBlockWith:'[video]', closeBlockWith:'[/video]', className:'video'},
 		],
 		
 		}
@@ -579,7 +567,42 @@ function dignity_blogs_editor()
  
 	echo '<script type="text/javascript" >
 			$(document).ready(function() {
-			$(".markItUp").markItUp(dignity_plugins_editor_settings);
+			$(".markItUp").markItUp(dignity_blogs_editor_settings);
+			});
+	</script>';
+	
+}
+
+// подключаем редактор markitup и задаём настройки
+function dignity_blogs_comments_editor()
+{
+ 
+	// подключаем js от редактора markitup
+	echo '<script src="'. getinfo('plugins_url') . 'dignity_blogs/js/jquery.markitup.js"></script>';
+
+	// подключаем стили редактора
+	echo '<link rel="stylesheet" href="'. getinfo('plugins_url') . 'dignity_blogs/css/editor.css">';
+ 
+	echo "<script type=\"text/javascript\" >
+		var dignity_blogs_comments_editor_settings = {
+		
+		nameSpace:'bbcode',
+		
+		markupSet:[
+			{name:'Полужирный', openWith:'[b]', closeWith:'[/b]', className:'bold', key:'B'},
+			{name:'Курсив', openWith:'[i]', closeWith:'[/i]', className:'italic', key:'I'},
+			{name:'Подчеркнутый', openWith:'[u]', closeWith:'[/u]', className:'underline', key:'U'},
+			{name:'Зачеркнутый', openWith:'[s]', closeWith:'[/s]', className:'stroke', key:'S'},
+			{name:'Цитата', openWith:'[quote]', closeWith:'[/quote]', className:'quote'},
+			{name:'Код', openBlockWith:'[code]', closeBlockWith:'[/code]', className:'code'},
+		],
+		
+		}
+	</script>";
+ 
+	echo '<script type="text/javascript" >
+			$(document).ready(function() {
+			$(".markItUp").markItUp(dignity_blogs_comments_editor_settings);
 			});
 	</script>';
 	

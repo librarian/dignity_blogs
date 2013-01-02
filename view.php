@@ -324,7 +324,7 @@ if ($id)
 
 				// массивы для добавления в базу данных
 				$ins_data = array (
-				        'dignity_blogs_comments_text' => htmlspecialchars($post['f_dignity_blogs_comments_text']),
+				        'dignity_blogs_comments_text' => htmlspecialchars(mso_xss_clean($post['f_dignity_blogs_comments_text'])),
 				        'dignity_blogs_comments_datecreate' => date('Y-m-d H:i:s'),
 				        'dignity_blogs_comments_dateupdate' => date('Y-m-d H:i:s'),
 				        'dignity_blogs_comments_thema_id' => $id,
@@ -362,6 +362,10 @@ if ($id)
 			        $form = '';     
 					$form .= '<h2>' . t('Оставьте комментарий!', __FILE__) . '</h2>';     
 					$form .= '<form action="" method="post">' . mso_form_session('f_session_id');
+
+					// редактор для комментарий
+					dignity_blogs_comments_editor();
+					
 					$form .= '<p><strong>' . t('Текст (можно использовать bb-code):', __FILE__) . '<span style="color:red;">*</span></strong><br><textarea name="f_dignity_blogs_comments_text" class="markItUp"
 						cols="80" rows="10" value="" required="required" style="margin-top: 2px; margin-bottom: 2px; "></textarea>';
 					$form .= '<p><input type="submit" class="submit" name="f_submit_dignity_blogs_comments_add" value="' . t('Отправить', __FILE__) . '"></p>';

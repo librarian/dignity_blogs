@@ -31,9 +31,7 @@
 .bbcode .right a { background-image:url(../img/editor/right.png); }
 .bbcode .justify a { background-image:url(../img/editor/justify.png); }
 .bbcode .text_smallcaps a { background-image:url(../img/editor/text_smallcaps.png); }
-.bbcode .vk a { background-image:url(../img/editor/vk.png); }
-.bbcode .vimeo a { background-image:url(../img/editor/vimeo.png); }
-.bbcode .ya_video a { background-image:url(../img/editor/yandex_video.png); }
+.bbcode .video a { background-image:url(../img/editor/video.png); }
 
 /* -------------------------------------------------------------------
 // markItUp! Universal MarkUp Engine, JQuery plugin
