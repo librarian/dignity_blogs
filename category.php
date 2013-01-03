@@ -50,6 +50,7 @@ else
 // берем записи из базы
 $CI->db->from('dignity_blogs');
 $CI->db->where('dignity_blogs_approved', true);
+$CI->db->where('dignity_blogs_ontop', true);
 $CI->db->where('dignity_blogs_category', mso_segment(3));
 $CI->db->order_by('dignity_blogs_datecreate', 'desc');
 $CI->db->join('dignity_blogs_category', 'dignity_blogs_category.dignity_blogs_category_id = dignity_blogs.dignity_blogs_category', 'left');
