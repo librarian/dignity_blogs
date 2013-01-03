@@ -651,11 +651,11 @@ function blogs_menu()
 	        
 			if (mso_segment(2) == 'add')
 	        {
-	            echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Новая запись', __FILE__) . '</a></span></li>';
+	            echo '<li class="elem blogs_tabs-current"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Написать в блог!', __FILE__) . '</a></span></li>';
 	        }
 	        else
 	        {
-	            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Новая запись', __FILE__) . '</a></span></li>';
+	            echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/edit.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/add/' . '">' . t('Написать в блог!', __FILE__) . '</a></span></li>';
 	        }
 	        
 			if (mso_segment(2) == 'new')
@@ -676,7 +676,7 @@ function blogs_menu()
 		        echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/comments/' . '">' . t('Комментарии', __FILE__) . '</a></span></li>';
 		    }
 		
-			echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/rss.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/rss/' . '">' . t('RSS', __FILE__) . '</a></span></li>';
+			echo '<li class="elem"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/rss.png' . '" title="' . t('RSS лента', __FILE__) . '"><span><a href="' . getinfo('site_url') . $options['slug'] . '/rss/' . '"></a></span></li>';
 		
 	        echo '</ul>';
         echo '</div>';
