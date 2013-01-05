@@ -130,7 +130,7 @@ if (is_login_comuser())
 		$CI->db->from('dignity_blogs_category');
 		$q = $CI->db->get();
 		$category_list = array();
-		$category_list[] = 'Не задан.';
+		$category_list[] = t('Не задан.', __FILE__);
 		foreach ($q->result_array() as $rw)
 		{
 			$category_list[$rw['dignity_blogs_category_id']] = $rw['dignity_blogs_category_name'];
