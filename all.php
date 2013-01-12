@@ -117,6 +117,8 @@ else
 	echo t('Нет блогов.', __FILE__);
 }
 
+echo '<div class="clearfix"></div>';
+
 // конец шаблона
 if ($fn = mso_find_ts_file('main/main-end.php')) require($fn);
 

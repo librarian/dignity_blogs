@@ -11,6 +11,9 @@ function dignity_blogs_autoload()
 {
 	mso_hook_add('admin_init', 'dignity_blogs_admin_init');
 	mso_hook_add('custom_page_404', 'dignity_blogs_custom_page_404');
+
+	// для вывода количества статей и комментарий
+	mso_hook_add('users_add_out', 'dignity_blogs_users_add_out');
 	
 	// подключаем плагин jquery для подсчёта количества введеных символов
 	mso_hook_add('head','blogs_char_count_js_head');
@@ -697,6 +700,49 @@ function blogs_style_css($a = array())
 	echo '<link rel="stylesheet" href="' . $css . '">' . NR;
 	
 	return $a;
+}
+
+// функция хука users_add_out
+// выводит количество публикаций и комментарий на странице комюзера
+function dignity_blogs_users_add_out($comuser = array())
+{
+	// доступ к CodeIgniter
+	$CI = & get_instance();
+
+	// загружаем опции
+	$options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
+	if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
+
+	// выводим заголовок
+	echo '<h2 style="padding: 3px; border-bottom: 1px solid #DDD;">' . t('Активность в блогах', __FILE__) . '</h2>';
+
+	// подсчитываем количество статей комюзера
+    $CI->db->from('dignity_blogs');
+    $CI->db->where('dignity_blogs_approved', '1');
+    $CI->db->where('dignity_blogs_comuser_id', mso_segment(2));
+    $blogs_entry = $CI->db->count_all_results();
+
+    // если больше одной, то выводим ссылку на блог
+    if ($blogs_entry >= 1)
+    {
+    	$entry_url = '<a href="' . getinfo('site_url') . $options['slug'] . '/blog/' . mso_segment(2) . '">' . $blogs_entry . '</a>';
+    }
+    else
+    {
+    	$entry_url = $blogs_entry;
+    }
+
+    // выводим заголовок
+    echo '<p style="padding-left:20px;">' . '<strong>' . t('Публикаций:', __FILE__) . '</strong> ' . $entry_url . '</p>';
+      
+    // подсчитываем количество комментарий комюзера
+    $CI->db->from('dignity_blogs_comments');
+	$CI->db->where('dignity_blogs_comments_approved', '1');
+	$CI->db->where('dignity_blogs_comments_comuser_id', mso_segment(2));
+	$blogs_comments = $CI->db->count_all_results();
+    echo '<p style="padding-left:20px;">' . '<strong>' . t('Комментарий:', __FILE__) . '</strong> ' . $blogs_comments . '</p>';
+	
+	return $comuser;
 }
 
 #end of file
