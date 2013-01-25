@@ -153,7 +153,7 @@ mso_hook_add('head', 'blogs_style_css');
 
 function blogs_style_css($a = array())
 {
-	if (file_exists(getinfo('plugins_url') . 'dignity_blogs/css/custom.css'))
+	if (file_exists(getinfo('plugins_dir') . 'dignity_blogs/css/custom.css'))
 	{
 		$css = getinfo('plugins_url') . 'dignity_blogs/css/custom.css';
 	} 
