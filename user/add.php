@@ -13,8 +13,11 @@ if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 // получаем доступ к CI
 $CI = & get_instance();
 
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
 // выводим меню
-blogs_menu();
+$blogs->menu();
 
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
@@ -69,7 +72,9 @@ if (is_login_comuser())
 		$form .= '<h1>' . t('Новая запись', __FILE__) . '</h1>';
 		$form .= '<form action="" method="post">' . mso_form_session('f_session_id');
 		
-		dignity_blogs_editor();
+		$blogs->editor();
+
+		$blogs->char_count_js();
 		
 		$form .= '
 		<script>

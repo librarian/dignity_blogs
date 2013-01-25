@@ -14,8 +14,11 @@ if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 // получаем доступ к CI
 $CI = & get_instance();
 
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
 // выводим меню
-blogs_menu();
+$blogs->menu();
 
 $id = mso_segment(3);
 if (!is_numeric($id)) $id = false;
@@ -103,7 +106,9 @@ if ($id && is_login_comuser())
 				
 				foreach ($articles as $article) 
 				{
-					dignity_blogs_editor();
+					$blogs->editor();
+
+					$blogs->char_count_js();
 					
 					$form .= '
 					<script>

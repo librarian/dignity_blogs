@@ -10,7 +10,7 @@
 $info = array(
 	'name' => t('dignity_blogs', __FILE__),
 	'description' => t('Блоги для MaxSite CMS.', __FILE__),
-	'version' => '1.09',
+	'version' => '1.10',
 	'author' => t('Александр Шиллинг', __FILE__),
 	'plugin_url' => 'http://alexanderschilling.net/',
 	'author_url' => 'http://alexanderschilling.net/',

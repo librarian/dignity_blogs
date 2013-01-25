@@ -18,8 +18,11 @@ $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
 
-// меню
-blogs_menu();
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
+// выводим меню
+$blogs->menu();
 
 // добавляем заголовок
 echo '<h1><a href="' . getinfo('siteurl') . $options['slug'] . '">' . t('Новые комментарии', __FILE__) . '</a></h1>';
@@ -74,7 +77,7 @@ if ($query->num_rows() > 0)
 	{	
 		$catout .= '<li>';
 		$catout .= '<p>';
-		$catout .= '<a href="' . getinfo('siteurl') . $options['slug'] . '/view/' . $entry['dignity_blogs_comments_thema_id'] . '">' . blogs_cleantext(mso_str_word($entry['dignity_blogs_comments_text'], $counttext = 10, $sep = ' ')) . ' ...</a>'
+		$catout .= '<a href="' . getinfo('siteurl') . $options['slug'] . '/view/' . $entry['dignity_blogs_comments_thema_id'] . '">' . $blogs->bb_parser(mso_str_word($entry['dignity_blogs_comments_text'], $counttext = 10, $sep = ' ')) . ' ...</a>'
 			. '<br>' . t(' от ', __FILE__) . '<a href="' . getinfo('siteurl') . 'users/' . $entry['dignity_blogs_comments_comuser_id'] . '">' . $entry['comusers_nik'] . '</a>' . t(' в ', __FILE__) . mso_date_convert($format = 'H:i → d.m.Y', $entry['dignity_blogs_comments_datecreate']);
 		if (is_login())
 		{	

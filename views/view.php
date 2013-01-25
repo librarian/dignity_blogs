@@ -10,6 +10,9 @@
 // начало шаблона
 if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 
+// получаем доступ к CI
+$CI = & get_instance();
+
 // загружаем опции
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if (!isset($options['noapproved']))  $options['noapproved'] = true;
@@ -18,11 +21,11 @@ if (!isset($options['cackle_code']) ) $options['cackle_code'] = '';
 if (!isset($options['no_pagination']))  $options['no_pagination'] = true;
 if (!isset($options['no_blog_name']))  $options['no_blog_name'] = true;
 
-// получаем доступ к CI
-$CI = & get_instance();
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
 
 // выводим меню
-blogs_menu();
+$blogs->menu();
 
 // проверка сегмента
 $id = mso_segment(3);
@@ -126,12 +129,12 @@ if ($id)
 			
 			// выводим анонс статьи
 			$out .= '<div class="blogs_info_cuttext">';
-				$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
+				$out .= '<p>' . $blogs->bb_parser($onepage['dignity_blogs_cuttext']) . '</p>';
 			$out .= '</div>';
 
 			// выводим весь текст
 			$out .= '<div class="blogs_info_text">';
-				$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_text']) . '</p>';
+				$out .= '<p>' . $blogs->bb_parser($onepage['dignity_blogs_text']) . '</p>';
 			$out .= '</div>';
 		
 			$out .= '<div class="blogs_info">';
@@ -168,7 +171,7 @@ if ($id)
 					$out .= ' <a href="' . getinfo('site_url') . $options['slug'] . '" title="' . t('Все записи', __FILE__) . '">' . t('Все записи', __FILE__) . '</a>';
 				}
 					
-				$out .= blogs_yandex_share();
+				$out .= $blogs->yandex_share();
 				
 			$out .= '</div>';
 			
@@ -271,7 +274,7 @@ if ($id)
 							$comments_out .= '</span>';
 						$comments_out .= '</div>';
 						$comments_out .= '<div class="blogs_comments_content">';
-							$comments_out .= '<p>' . blogs_cleantext($onecomment['dignity_blogs_comments_text']) . '</p>';
+							$comments_out .= '<p>' . $blogs->bb_parser($onecomment['dignity_blogs_comments_text']) . '</p>';
 						$comments_out .= '</div>';
 					$comments_out .= '</li>';
 				$comments_out .= '</div>';
@@ -364,7 +367,7 @@ if ($id)
 					$form .= '<form action="" method="post">' . mso_form_session('f_session_id');
 
 					// редактор для комментарий
-					dignity_blogs_comments_editor();
+					$blogs->comments_editor();
 					
 					$form .= '<p><strong>' . t('Текст (можно использовать bb-code):', __FILE__) . '<span style="color:red;">*</span></strong><br><textarea name="f_dignity_blogs_comments_text" class="markItUp"
 						cols="80" rows="10" value="" required="required" style="margin-top: 2px; margin-bottom: 2px; "></textarea>';

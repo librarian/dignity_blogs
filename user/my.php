@@ -10,8 +10,11 @@
 // начало шаблона
 if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
 // выводим меню
-blogs_menu();
+$blogs->menu();
 
 if (is_login_comuser())
 {

@@ -13,6 +13,12 @@ if ($fn = mso_find_ts_file('main/main-start.php')) require($fn);
 // доступ к CI
 $CI = & get_instance();
 
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
+// выводим меню
+$blogs->menu();
+
 // загружаем опции
 $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['limit']) ) $options['limit'] = 10;
@@ -27,9 +33,6 @@ if ( !isset($options['no_blog_name']))  $options['no_blog_name'] = true;
 mso_head_meta('title', $options['title']);
 mso_head_meta('description', $options['description']);
 mso_head_meta('keywords', $options['keywords']);
-
-// выводим меню
-blogs_menu();
 
 // выводим заголовок "блоги"
 echo '<h1>' . $options['title'] . '</h1>';
@@ -128,7 +131,7 @@ if ($query->num_rows() > 0)
 			
 			// выводим анонс статьи
 			$out .= '<div class="blogs_info_cuttext">';
-				$out .= '<p>' . blogs_cleantext($onepage['dignity_blogs_cuttext']) . '</p>';
+				$out .= '<p>' . $blogs->bb_parser($onepage['dignity_blogs_cuttext']) . '</p>';
 			$out .= '</div>';
 			
 			// если нет текста, скрываем ссылку «подробнее»

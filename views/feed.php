@@ -7,6 +7,9 @@
  * License GNU GPL 2+
  */
 
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
 // получаем доступ к CI
 $CI = & get_instance();
 
@@ -93,7 +96,7 @@ if ($id)
 				<link>" . getinfo('site_url') . $options['slug'] . '/view/' . $onenews['dignity_blogs_id'] . "</link>
 				<guid>" . getinfo('site_url') . $options['slug'] . '/view/' . $onenews['dignity_blogs_id'] . "</guid>
 				<pubDate>" . mso_date_convert($format = 'D, d M Y H:i:s', $onenews['dignity_blogs_datecreate']) . "</pubDate>
-				<description><![CDATA[" . blogs_cleantext($onenews['dignity_blogs_cuttext']) . "]]></description>
+				<description><![CDATA[" . $blogs->bb_parser($onenews['dignity_blogs_cuttext']) . "]]></description>
 				</item>");
 			}
 		}

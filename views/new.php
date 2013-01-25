@@ -17,8 +17,11 @@ $options = mso_get_option('plugin_dignity_blogs', 'plugins', array());
 if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
 if ( !isset($options['limit']) ) $options['limit'] = 10;
 
-// меню
-blogs_menu();
+require_once(getinfo('plugins_dir') . 'dignity_blogs/core/functions.php');
+$blogs = new Blogs;
+
+// выводим меню
+$blogs->menu();
 
 // добавляем заголовок
 echo '<h1><a href="' . getinfo('siteurl') . $options['slug'] . '">' . t('Новые записи', __FILE__) . '</a></h1>';
