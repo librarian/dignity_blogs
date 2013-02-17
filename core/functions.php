@@ -80,7 +80,7 @@ class Blogs
 		        echo '<li class="elem"><span style="padding-right:5px;"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/comments.png' . '"></span><span><a href="' . getinfo('site_url') . $options['slug'] . '/comments/' . '">' . t('Комментарии', __FILE__) . '</a></span></li>';
 		    }
 		
-			echo '<li class="elem"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/rss.png' . '" title="' . t('RSS лента', __FILE__) . '"><span><a href="' . getinfo('site_url') . $options['slug'] . '/rss/' . '"></a></span></li>';
+			echo '<li class="elem"><a href="' . getinfo('site_url') . $options['slug'] . '/rss/' . '"><img src="' . getinfo('plugins_url') . 'dignity_blogs/img/rss.png' . '" title="' . t('RSS лента', __FILE__) . '"></a></li>';
 		
 	        echo '</ul>';
         echo '</div>';
@@ -196,6 +196,9 @@ class Blogs
 
 			// опасный тэг, позвоялет исполнять html и js так что блокируем его
 			'~\[html\](.*?)\[\/html\]~si' => 'Заблокировано!',
+
+			// тэг позволяет исполнять php, если вклечен плагин "run_php", поэтому блокируем его
+			'~\[php\](.*?)\[\/php\]~si' => 'Заблокировано!',
 		);
 
 		$content = preg_replace(array_keys($preg), array_values($preg), $content);
