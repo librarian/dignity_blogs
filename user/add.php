@@ -127,7 +127,7 @@ if (is_login_comuser())
 		{
 			$chckout = 'checked="true"';
 		}    
-		$form .= '<p>' . t('Разрешить комментирование?', 'plugins') . ' <input name="f_dignity_blogs_comments" type="checkbox" ' . $chckout . '></p>';
+		$form .= '<p>' . t('Разрешить комментирование?', __FILE__) . ' <input name="f_dignity_blogs_comments" type="checkbox" ' . $chckout . '></p>';
 		$form .= '<p style="color:#b2b2b3;">' . t('Если убрать эту галочку, то нельзя будет оставлять комментарии к записи.', __FILE__) . '</p>';
 		
 		// выбрать категорию

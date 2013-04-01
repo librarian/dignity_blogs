@@ -3,12 +3,18 @@ dignity_blogs
 
 Блоги для MaxSite CMS.
 
-После загрузки нужно переименовать папку "dignity_blogs-master" в "dignity_blogs" и загрзить всё в "/application/maxsite/plugins/"!
+=========
+УСТАНОВКА
+=========
 
-Сайт плагина: http://alexanderschilling.ru
+1. После загрузки нужно переименовать папку "dignity_blogs-master" в "dignity_blogs" и загрзить всё в "/application/maxsite/plugins/"!
+2. Перейти в панель управления -> Плагины -> выбрать плагин "dignity_blogs" и нажать кнопку "Включить"
 
-Рабочий пример: http://rooland.ru/blogs
+==============================
+ОБНОВЛЕНИЕ С ПРЕДЫДУЩЕЙ ВЕРСИИ
+==============================
 
-Тема на официальном форуме MaxSite CMS: http://forum.max-3000.com/viewtopic.php?f=6&t=4634
+Если у вас версия ниже 1.10 то обновление следует выполнять так:
 
-История изменений: https://github.com/dignityinside/dignity_blogs/wiki/Changelog
+1. Удаляем папку "/application/maxsite/plugins/dignity_blogs"
+2. Далее всё как при установке шаг 1.

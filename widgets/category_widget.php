@@ -7,8 +7,6 @@
  * License GNU GPL 2+
  */
 
-//<- начало первого виджета
-
 # функция, которая берет настройки из опций виджетов
 function dignity_blogs_category_widget($num = 1) 
 {
@@ -41,11 +39,10 @@ function dignity_blogs_category_widget_custom($options = array(), $num = 1)
 	// если есть что выводить
 	if ($query->num_rows() > 0)	
 	{	
-		$entrys = $query->result_array();
 		
         $catout = '';
 		
-		foreach ($entrys as $entry) 
+		foreach ($query->result_array() as $entry) 
 		{
 			// узнаем количество записей в категории
 			$CI->db->where('dignity_blogs_approved', true);
@@ -82,7 +79,5 @@ function dignity_blogs_category_widget_custom($options = array(), $num = 1)
 	
 	return $out;	
 }
-
-//-> конец первого виджета
 
 #end of file

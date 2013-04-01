@@ -171,6 +171,16 @@ if ($query->num_rows() > 0)
 					$out .= '</span>';
 					$out .= ' <a href="' . getinfo('site_url') . $options['slug'] . '" title="' . t('Все записи', __FILE__) . '">' . t('Все записи', __FILE__) . '</a>';
 				}
+
+				if ($onepage['dignity_blogs_views'])
+				{
+					// количество просмотров
+					$out .= ' | ';
+					$out .='<span style="padding-right:5px;">';
+					$out .= '<img src="' . getinfo('plugins_url') . 'dignity_blogs/img/views.png' . '" title="' . t('Просмотров', __FILE__) . '">';
+					$out .= '</span>';
+					$out .= $onepage['dignity_blogs_views'];
+				}
 			
 				// подсчитываем количество комментарий
 				$CI->db->from('dignity_blogs_comments');

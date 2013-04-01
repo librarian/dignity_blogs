@@ -7,8 +7,6 @@
  * License GNU GPL 2+
  */
 
-// <- начало второго виджета
-
 # функция, которая берет настройки из опций виджетов
 function dignity_blogs_new_widget($num = 1) 
 {
@@ -73,7 +71,5 @@ function dignity_blogs_new_widget_custom($options = array(), $num = 1)
 	
 	return $out;	
 }
-
-// -> конец второго виджета
 
 #end of file
