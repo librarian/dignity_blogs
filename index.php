@@ -89,80 +89,48 @@ function dignity_blogs_custom_page_404($args = false)
 	if ( !isset($options['slug']) ) $options['slug'] = 'blogs';
    
    // если первый сегмент равен slug (blogs)
-	if ( mso_segment(1)==$options['slug'] )
+	if ( mso_segment(1) == $options['slug'] )
 	{
-		// если второй сегмент add
-		if(mso_segment(2) == 'add')
-		{
-			// открываем add
-			require( getinfo('plugins_dir') . 'dignity_blogs/user/add.php' );
+		switch (mso_segment(2)) {
+                case 'add':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/user/add.php' );
+                    break;
+                case 'edit':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/user/edit.php' );
+                    break;
+                case 'my':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/user/my.php' );
+                    break;
+                case 'blog':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/blog.php' );
+                    break;
+                case 'view':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/view.php' );
+                    break;
+                case 'all':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/all.php' );
+                    break;
+                case 'category':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/category.php' );
+                    break;
+                case 'new':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/new.php' );
+                    break;
+                case 'rss':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/rss.php' );
+                    break;
+                case 'comments':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/comments.php' );
+                    break;
+                case 'feed':
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/feed.php' );
+                    break;
+                default:
+			        require( getinfo('plugins_dir') . 'dignity_blogs/views/blogs.php' );
+                    break;
+
 		}
-		// если второй сегмент edit
-		elseif(mso_segment(2) == 'edit')
-		{
-			// открываем edit
-			require( getinfo('plugins_dir') . 'dignity_blogs/user/edit.php' );
-		}
-		// если второй сегмент блог
-		elseif(mso_segment(2) == 'blog')
-		{
-			// открываем blog - показываем все записи одного пользователя
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/blog.php' );
-		}
-		// если второй сегмент view
-		elseif(mso_segment(2) == 'view')
-		{
-			// открываем view - показываем всю запись
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/view.php' );
-		}
-		// если второй сегмент all
-		elseif(mso_segment(2) == 'all')
-		{
-			// открываем all - показываем все блоги
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/all.php' );
-		}
-		// если второй сегмент my
-		elseif(mso_segment(2) == 'my')
-		{
-			// открываем my
-			require( getinfo('plugins_dir') . 'dignity_blogs/user/my.php' );
-		}
-		// если второй сегмент category
-		elseif(mso_segment(2) == 'category')
-		{
-			// открываем category
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/category.php' );
-		}
-		// если второй сегмент rss
-		elseif(mso_segment(2) == 'rss')
-		{
-			// открываем rss - rss лента всех записей
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/rss.php' );
-		}
-		// если второй сегмент comments
-		elseif(mso_segment(2) == 'comments')
-		{
-			// открываем comments - новые комментарии
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/comments.php' );
-		}
-		// если второй сегмент new
-		elseif(mso_segment(2) == 'new')
-		{
-			// открываем new - новые записи
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/new.php' );
-		}
-		// если второй сегмент feed
-		elseif(mso_segment(2) == 'feed')
-		{
-			// открываем feed - rss лента блога
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/feed.php' );
-		}
-		// иначе
-		else
-		{
-			// открываем избранные записи
-			require( getinfo('plugins_dir') . 'dignity_blogs/views/blogs.php' ) ;
-		}
+
 		
 		return true;
 	}
